@@ -2,7 +2,34 @@
 
 /* LEXER */
 
+int scan(char* input) {
+    char c;
+    char tok[256];
 
+    puts(&input[0]);
+
+    if((c = input[0]) == '(') {
+        input++;
+        c = *input; // skip the (
+        while(c != ')' && c != '\0') {
+            putc(c, stdout);
+            putc('\n', stdout);
+            input++;
+            c = *input;
+        }
+
+        if(c == '\0') {
+            fprintf(stderr, "Error: ending ) not found");
+            return 2;
+        }
+
+        return 0;
+    }
+    else {
+        fprintf(stderr, "Error: expected (");
+        return 1;
+    }
+}
 
 int main(int argc, char** argv)
 {
@@ -17,7 +44,10 @@ int main(int argc, char** argv)
         while (1) {
             fputs("headache> ", stdout);
             fgets(input, 2048, stdin);
-            printf("Input was: %s", input);
+            
+            if(scan(input) != 0) {
+                return 1;
+            }
         }
     }
     else if(argc > 2)
@@ -31,6 +61,13 @@ int main(int argc, char** argv)
     }
     else {
         /* Start of program */
+        char line[1024];
+
+        while(fgets(line, 1024, program)) {
+            if(scan(line) != 0) {
+                return 1;
+            }
+        }
 
         printf("Successfully opened file");
     }
