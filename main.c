@@ -1,10 +1,15 @@
 #include <stdio.h>
 
+typedef struct {
+    char* operator;
+    char* operands[32];
+} operation;
+
 /* LEXER */
 
 int scan(char* input) {
     char c;
-    char tok[256];
+    char op[256];
 
     puts(&input[0]);
 
