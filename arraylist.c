@@ -105,23 +105,21 @@ struct node* array_list_get(array_list* list, int id) {
         return NULL; // should report list is empty
     }
 
-    struct node* found_node;
     struct node* current_node;
     current_node = list->head;
-    while(current_node->next != NULL) {
+    while(current_node != NULL) {
         if(current_node->id == id) {
-            found_node = current_node;
             break;
         }
 
         current_node = current_node->next;
     }
 
-    if(found_node == NULL) {
+    if(current_node == NULL) {
         return NULL; // should report data not found
     }
 
-    return found_node;
+    return current_node;
 }
 
 int array_list_delete(array_list* list, struct node* found_node) {
@@ -213,7 +211,7 @@ void array_list_test() {
 
     int status = 0;
 
-    // Testing Append and Insert
+    // Testing Append
     printf("** APPENDING TO LIST\n");
     status = array_list_append(test_list, "DATA1");
     if(status == 1) {
@@ -237,4 +235,29 @@ void array_list_test() {
         exit(1);
     }
     array_list_print(test_list);
+
+    // Testing Get
+    printf("** GETTING DATA1");
+    struct node* n = array_list_get(test_list, 0);
+    if(n == NULL) {
+        fprintf(stderr, "Error: get failed");
+        exit(1);
+    }
+    node_print(n);
+
+    printf("** GETTING DATA2");
+    n = array_list_get(test_list, 1);
+    if(n == NULL) {
+        fprintf(stderr, "Error: get failed");
+        exit(1);
+    }
+    node_print(n);
+    printf("** GETTING DATA3");
+    
+    n = array_list_get(test_list, 2);
+    if(n == NULL) {
+        fprintf(stderr, "Error: get failed");
+        exit(1);
+    }
+    node_print(n);
 }
