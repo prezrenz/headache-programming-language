@@ -31,4 +31,8 @@ int array_list_delete(array_list* list, struct node* found_node);
 int array_list_delete_data(array_list* list, char* data);
 int array_list_delete_id(array_list* list, int id);
 
+void node_print(struct node* n);
+void array_list_print(array_list* list);
+void array_list_test();
+
 #endif

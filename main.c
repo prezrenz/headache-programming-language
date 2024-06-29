@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "arraylist.h"
 
 typedef struct {
     char* operator;
@@ -38,7 +39,7 @@ int scan(char* input) {
 
 int main(int argc, char** argv)
 {
-    FILE* program;
+    /*FILE* program;
 
     if(argc == 1) {
         char input[2048];
@@ -49,7 +50,7 @@ int main(int argc, char** argv)
         while (1) {
             fputs("headache> ", stdout);
             fgets(input, 2048, stdin);
-            
+
             if(scan(input) != 0) {
                 return 1;
             }
@@ -65,7 +66,7 @@ int main(int argc, char** argv)
         return 2;
     }
     else {
-        /* Start of program */
+         Start of program 
         char line[1024];
 
         while(fgets(line, 1024, program)) {
@@ -75,7 +76,9 @@ int main(int argc, char** argv)
         }
 
         printf("Successfully opened file");
-    }
+    }*/
+
+    array_list_test();
 
     return 0;
 }
