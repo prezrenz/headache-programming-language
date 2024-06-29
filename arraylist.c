@@ -13,17 +13,19 @@ array_list* array_list_new() {
     return new_array_list;
 }
 
-void array_list_free(array_list* list) {
+int array_list_free(array_list* list) {
     while (list->size > 0) {
         array_list_delete(list, list->head);
     }
 
     free(list);
+
+    return 0;
 }
 
-void array_list_insert(array_list *list, char *data, int pos) {
+int array_list_insert(array_list *list, char *data, int pos) {
     if(pos > list->size || pos < 0) {
-        return; // should report error
+        return 1; // should report error
     }
 
     struct node* new_node = malloc(sizeof(struct node));
@@ -34,17 +36,24 @@ void array_list_insert(array_list *list, char *data, int pos) {
 
     struct node* insert_after = array_list_get(list, pos);
     if(insert_after == NULL) {
-        return; // should report error
+        return 2; // should report error
     }
 
     new_node->next = insert_after->next;
     new_node->prev = insert_after;
     insert_after->next->prev = new_node;
     insert_after->next = new_node;
+    
+    return 0;
 }
 
-void array_list_append(array_list *list, char *data) {
+int array_list_append(array_list *list, char *data) {
     struct node* new_node = malloc(sizeof(struct node));
+    
+    if(new_node == NULL) {
+        return 1; // is this even possible?
+    }
+
     new_node->id = list->size;
     new_node->next = NULL;
     new_node->prev = list->end;
@@ -52,6 +61,8 @@ void array_list_append(array_list *list, char *data) {
 
     list->size += 1;
     list->end = new_node;
+
+    return 0;
 }
 
 struct node* array_list_find(array_list* list, char* data) {
@@ -102,7 +113,7 @@ struct node* array_list_get(array_list* list, int id) {
     return found_node;
 }
 
-void array_list_delete(array_list* list, struct node* found_node) {
+int array_list_delete(array_list* list, struct node* found_node) {
     if(list->size == 1) {
         list->head = NULL;
         list->end = NULL;
@@ -121,30 +132,32 @@ void array_list_delete(array_list* list, struct node* found_node) {
         list->size -= 1;
         free(found_node);
     }
+
+    return 0;
 }
 
-void array_list_delete_data(array_list* list, char* data) {
+int array_list_delete_data(array_list* list, char* data) {
     if(list->size == 0) {
-        return; // should report list empty
+        return 1; // should report list empty
     }
 
     struct node* found_node = array_list_find(list, data); 
     if(found_node == NULL) {
-        return; // should report failed
+        return 2; // should report failed
     }
 
-    array_list_delete(list, found_node);
+    return array_list_delete(list, found_node);
 }
 
-void array_list_delete_id(array_list* list, int id) {
+int array_list_delete_id(array_list* list, int id) {
     if(list->size == 0) {
-        return; // should report list empty
+        return 1; // should report list empty
     }
     
     struct node* found_node = array_list_get(list, id); 
     if(found_node == NULL) {
-        return; // should report failed
+        return 2; // should report failed
     }
 
-    array_list_delete(list, found_node);
+    return array_list_delete(list, found_node);
 }
