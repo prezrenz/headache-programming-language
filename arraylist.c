@@ -81,23 +81,21 @@ struct node* array_list_find(array_list* list, char* data) {
         return NULL; // should report list is empty
     }
 
-    struct node* found_node;
     struct node* current_node;
     current_node = list->head;
-    while(current_node->next != NULL) {
-        if(current_node->value == data) {
-            found_node = current_node;
+    while(current_node != NULL) {
+        if(strcmp(current_node->value, data) == 0) {
             break;
         }
 
         current_node = current_node->next;
     }
 
-    if(found_node == NULL) {
+    if(current_node == NULL) {
         return NULL; // should report data not found
     }
 
-    return found_node;
+    return current_node;
 }
 
 struct node* array_list_get(array_list* list, int id) {
@@ -252,9 +250,35 @@ void array_list_test() {
         exit(1);
     }
     node_print(n);
+
     printf("** GETTING DATA3");
     
     n = array_list_get(test_list, 2);
+    if(n == NULL) {
+        fprintf(stderr, "Error: get failed");
+        exit(1);
+    }
+    node_print(n);
+    
+    // Testing Find
+    printf("** FINDING DATA1");
+    n = array_list_find(test_list, "DATA1");
+    if(n == NULL) {
+        fprintf(stderr, "Error: get failed");
+        exit(1);
+    }
+    node_print(n);
+
+    printf("** FINDING DATA2");
+    n = array_list_find(test_list, "DATA2");
+    if(n == NULL) {
+        fprintf(stderr, "Error: get failed");
+        exit(1);
+    }
+    node_print(n);
+
+    printf("** FINDING DATA3");
+    n = array_list_find(test_list, "DATA3");
     if(n == NULL) {
         fprintf(stderr, "Error: get failed");
         exit(1);
