@@ -30,8 +30,12 @@ int array_list_insert(array_list *list, char *data, int pos) {
         return 1; // should report error
     }
 
+    if(pos == list->size-1) { // if inserting at end just append
+        return array_list_append(list, data);
+    }
+
     struct node* new_node = malloc(sizeof(struct node));
-    new_node->id = list->size;
+    new_node->id = pos+1;
     new_node->next = NULL;
     new_node->prev = NULL;
     new_node->value = malloc(strlen(data)+1);
@@ -39,14 +43,23 @@ int array_list_insert(array_list *list, char *data, int pos) {
 
     struct node* insert_after = array_list_get(list, pos);
     if(insert_after == NULL) {
-        return 2; // should report error
+        return 2; // should report error, but should not be possible
     }
 
     new_node->next = insert_after->next;
     new_node->prev = insert_after;
     insert_after->next->prev = new_node;
     insert_after->next = new_node;
-    
+     
+    struct node* current_node;
+    current_node = new_node->next;
+    while(current_node != NULL) {
+        current_node->id += 1;
+        current_node = current_node->next;
+    }
+
+    list->size += 1;
+
     return 0;
 }
 
@@ -212,7 +225,7 @@ void array_list_test() {
     // Testing Append
     printf("** APPENDING TO LIST\n");
     status = array_list_append(test_list, "DATA1");
-    if(status == 1) {
+    if(status > 0) {
         fprintf(stderr, "Error: append failed, status %d", status);
         exit(1);
     }
@@ -220,7 +233,7 @@ void array_list_test() {
  
     printf("** APPENDING TO LIST\n");
     status = array_list_append(test_list, "DATA2");
-    if(status == 1) {
+    if(status > 0) {
         fprintf(stderr, "Error: append failed, status %d", status);
         exit(1);
     }
@@ -228,7 +241,7 @@ void array_list_test() {
     
     printf("** APPENDING TO LIST\n");
     status = array_list_append(test_list, "DATA3");
-    if(status == 1) {
+    if(status > 0) {
         fprintf(stderr, "Error: append failed, status %d", status);
         exit(1);
     }
@@ -284,4 +297,21 @@ void array_list_test() {
         exit(1);
     }
     node_print(n);
+
+    // ** Testing Insert
+
+    printf("** INSERTING DATA4 AFTER DATA 2");
+    status = array_list_insert(test_list, "DATA4", 1);
+    if(status > 0) {
+        printf("Error: failed to insert, status %d", status);
+    }
+    array_list_print(test_list);
+    
+    printf("** INSERTING DATA5 AFTER DATA 3");
+    status = array_list_insert(test_list, "DATA5", 3);
+    if(status > 0) {
+        printf("Error: failed to insert, status %d", status);
+    }
+    array_list_print(test_list);
+
 }
