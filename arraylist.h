@@ -2,6 +2,7 @@
 #define ARRAYLIST_H
 
 #include <stdlib.h>
+#include <stdbool.h>
 
 struct node {
     struct node* next;
@@ -30,6 +31,9 @@ struct node* array_list_get(array_list* list, int id);
 int array_list_delete(array_list* list, struct node* found_node);
 int array_list_delete_data(array_list* list, char* data);
 int array_list_delete_id(array_list* list, int id);
+
+bool array_list_is_empty(array_list* list);
+int array_list_empty(array_list* list);
 
 void node_print(struct node* n);
 void array_list_print(array_list* list);

@@ -30,7 +30,7 @@ int array_list_insert(array_list *list, char *data, int pos) {
         return 1; // should report error
     }
 
-    if(pos == list->size-1) { // if inserting at end just append
+    if(pos == list->size-1 || pos == 0) { // if inserting at end just append or list empty
         return array_list_append(list, data);
     }
 
@@ -199,6 +199,23 @@ int array_list_delete_id(array_list* list, int id) {
     return array_list_delete(list, found_node);
 }
 
+bool array_list_is_empty(array_list* list) {
+    return list->size == 0;
+}
+
+int array_list_empty(array_list* list) {
+    if(array_list_is_empty(list)) {
+        return 0; // already empty
+    }
+
+    int status;
+    while(!array_list_is_empty(list)) {
+        status = array_list_delete_id(list, 0);
+    }
+
+    return status;
+}
+
 void node_print(struct node* n) {
     if(n == NULL) printf("HUH!?");
 
@@ -210,6 +227,11 @@ void node_print(struct node* n) {
 void array_list_print(array_list* list) {
     printf("\nList Size: %d\n", list->size);
     printf("================");
+
+    if(list == NULL) {
+        printf("\nCANNOT PRINT, LIST IS NULL!");
+        return;
+    }
 
     if(list->size == 0) {
         printf("\nList is Empty!\n\n");
@@ -321,14 +343,16 @@ void array_list_test() {
     printf("** INSERTING DATA4 AFTER DATA 2\n");
     status = array_list_insert(test_list, "DATA4", 1);
     if(status > 0) {
-        printf("Error: failed to insert, status %d\n", status);
+        fprintf(stderr, "Error: failed to insert, status %d\n", status);
+        exit(1);
     }
     array_list_print(test_list);
     
     printf("** INSERTING DATA5 AFTER DATA 3\n");
     status = array_list_insert(test_list, "DATA5", 3);
     if(status > 0) {
-        printf("Error: failed to insert, status %d\n", status);
+        fprintf(stderr, "Error: failed to insert, status %d\n", status);
+        exit(1);
     }
     array_list_print(test_list);
 
@@ -337,14 +361,26 @@ void array_list_test() {
     printf("** DELETING DATA4 BY ID\n");
     status = array_list_delete_id(test_list, 2);
     if(status > 0) {
-        printf("Error: failed to delete, status %d\n", status);
+        fprintf(stderr, "Error: failed to delete, status %d\n", status);
+        exit(1);
     }
     array_list_print(test_list);
 
     printf("** DELETING DATA3 BY VALUE\n");
     status = array_list_delete_data(test_list, "DATA3");
     if(status > 0) {
-        printf("Error: failed to delete, status %d\n", status);
+        fprintf(stderr, "Error: failed to delete, status %d\n", status);
+        exit(1);
+    }
+    array_list_print(test_list);
+
+    // Testing Empty
+
+    printf("** EMPTYING LIST\n");
+    status = array_list_empty(test_list);
+    if(status > 0) {        
+        fprintf(stderr, "Error: failed to empty, status %d\n", status);
+        exit(1);
     }
     array_list_print(test_list);
 
@@ -353,9 +389,9 @@ void array_list_test() {
     printf("** FREEING TEST LIST\n");
     status = array_list_free(test_list);
     if(status > 0) {
-        printf("Error: failed to free test list, status %d\n", status);
+        fprintf(stderr, "Error: failed to free, status %d\n", status);
+        exit(1);
     }
-    printf(test_list);
 
     printf("SUCCESSFULLY FINISHED ARRAY LIST TESTS: NO ERRORS\n");
 }
