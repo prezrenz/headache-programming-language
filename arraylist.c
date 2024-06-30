@@ -141,6 +141,14 @@ int array_list_delete(array_list* list, struct node* found_node) {
         free(found_node);
     } else if(found_node == list->head) {
         list->head = found_node->next;
+        
+        struct node* current_node;
+        current_node = list->head;
+        while(current_node != NULL) {
+            current_node->id -= 1;
+            current_node = current_node->next;
+        }
+
         list->size -= 1;
         free(found_node);
     } else if(found_node == list->end) {
@@ -149,6 +157,15 @@ int array_list_delete(array_list* list, struct node* found_node) {
         free(found_node);
     } else {
         found_node->prev->next = found_node->next;
+        found_node->next->prev = found_node->prev;
+
+        struct node* current_node;
+        current_node = found_node->next;
+        while(current_node != NULL) {
+            current_node->id -= 1;
+            current_node = current_node->next;
+        }
+
         list->size -= 1;
         free(found_node);
     }
@@ -226,7 +243,7 @@ void array_list_test() {
     printf("** APPENDING TO LIST\n");
     status = array_list_append(test_list, "DATA1");
     if(status > 0) {
-        fprintf(stderr, "Error: append failed, status %d", status);
+        fprintf(stderr, "Error: append failed, status %d\n", status);
         exit(1);
     }
     array_list_print(test_list);
@@ -234,7 +251,7 @@ void array_list_test() {
     printf("** APPENDING TO LIST\n");
     status = array_list_append(test_list, "DATA2");
     if(status > 0) {
-        fprintf(stderr, "Error: append failed, status %d", status);
+        fprintf(stderr, "Error: append failed, status %d\n", status);
         exit(1);
     }
     array_list_print(test_list);
@@ -242,76 +259,103 @@ void array_list_test() {
     printf("** APPENDING TO LIST\n");
     status = array_list_append(test_list, "DATA3");
     if(status > 0) {
-        fprintf(stderr, "Error: append failed, status %d", status);
+        fprintf(stderr, "Error: append failed, status %d\n", status);
         exit(1);
     }
     array_list_print(test_list);
 
     // Testing Get
-    printf("** GETTING DATA1");
+    printf("** GETTING DATA1\n");
     struct node* n = array_list_get(test_list, 0);
     if(n == NULL) {
-        fprintf(stderr, "Error: get failed");
+        fprintf(stderr, "Error: get failed\n");
         exit(1);
     }
     node_print(n);
 
-    printf("** GETTING DATA2");
+    printf("** GETTING DATA2\n");
     n = array_list_get(test_list, 1);
     if(n == NULL) {
-        fprintf(stderr, "Error: get failed");
+        fprintf(stderr, "Error: get failed\n");
         exit(1);
     }
     node_print(n);
 
-    printf("** GETTING DATA3");
+    printf("** GETTING DATA3\n");
     
     n = array_list_get(test_list, 2);
     if(n == NULL) {
-        fprintf(stderr, "Error: get failed");
+        fprintf(stderr, "Error: get failed\n");
         exit(1);
     }
     node_print(n);
     
     // Testing Find
-    printf("** FINDING DATA1");
+    
+    printf("** FINDING DATA1\n");
     n = array_list_find(test_list, "DATA1");
     if(n == NULL) {
-        fprintf(stderr, "Error: get failed");
+        fprintf(stderr, "Error: get failed\n");
         exit(1);
     }
     node_print(n);
 
-    printf("** FINDING DATA2");
+    printf("** FINDING DATA2\n");
     n = array_list_find(test_list, "DATA2");
     if(n == NULL) {
-        fprintf(stderr, "Error: get failed");
+        fprintf(stderr, "Error: get failed\n");
         exit(1);
     }
     node_print(n);
 
-    printf("** FINDING DATA3");
+    printf("** FINDING DATA3\n");
     n = array_list_find(test_list, "DATA3");
     if(n == NULL) {
-        fprintf(stderr, "Error: get failed");
+        fprintf(stderr, "Error: get failed\n");
         exit(1);
     }
     node_print(n);
 
-    // ** Testing Insert
+    // Testing Insert
 
-    printf("** INSERTING DATA4 AFTER DATA 2");
+    printf("** INSERTING DATA4 AFTER DATA 2\n");
     status = array_list_insert(test_list, "DATA4", 1);
     if(status > 0) {
-        printf("Error: failed to insert, status %d", status);
+        printf("Error: failed to insert, status %d\n", status);
     }
     array_list_print(test_list);
     
-    printf("** INSERTING DATA5 AFTER DATA 3");
+    printf("** INSERTING DATA5 AFTER DATA 3\n");
     status = array_list_insert(test_list, "DATA5", 3);
     if(status > 0) {
-        printf("Error: failed to insert, status %d", status);
+        printf("Error: failed to insert, status %d\n", status);
     }
     array_list_print(test_list);
 
+    // Testing Delete
+    
+    printf("** DELETING DATA4 BY ID\n");
+    status = array_list_delete_id(test_list, 2);
+    if(status > 0) {
+        printf("Error: failed to delete, status %d\n", status);
+    }
+    array_list_print(test_list);
+
+    printf("** DELETING DATA3 BY VALUE\n");
+    status = array_list_delete_data(test_list, "DATA3");
+    if(status > 0) {
+        printf("Error: failed to delete, status %d\n", status);
+    }
+    array_list_print(test_list);
+
+    // Testing Free
+
+    printf("** FREEING TEST LIST\n");
+    status = array_list_free(test_list);
+    if(status > 0) {
+        printf("Error: failed to free test list, status %d\n", status);
+    }
+    printf(test_list);
+
+    printf("SUCCESSFULLY FINISHED ARRAY LIST TESTS: NO ERRORS\n");
 }
