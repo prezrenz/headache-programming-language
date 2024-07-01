@@ -1,7 +1,7 @@
 CC = cc
 CFLAGS = -Wall -Wextra -g -I.
 
-SOURCES = main.c arraylist.c
+SOURCES = main.c arraylist.c associativearray.c
  
 all: headache run
 
