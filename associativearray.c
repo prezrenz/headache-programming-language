@@ -26,10 +26,15 @@ int assoc_array_free(assoc_array* list) {
 }
 
 int assoc_array_append(assoc_array* list, char* key, char* value) {
+    struct kv_node* found_node = assoc_array_get(list, key);
+    if(found_node != NULL) {
+        return 1; // key already exists
+    }
+
     struct kv_node* new_node = malloc(sizeof(struct kv_node));
     
     if(new_node == NULL) {
-        return 1; // is this even possible?
+        return 2; // is this even possible?
     }
 
     new_node->key = strdup(key);
