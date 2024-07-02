@@ -21,6 +21,7 @@ int array_list_free(array_list* list) {
     }
 
     free(list);
+    list = NULL;
 
     return 0;
 }
@@ -139,6 +140,7 @@ int array_list_delete(array_list* list, struct node* found_node) {
         list->end = NULL;
         list->size = 0;
         free(found_node);
+        found_node = NULL;
     } else if(found_node == list->head) {
         list->head = found_node->next;
         
@@ -151,10 +153,13 @@ int array_list_delete(array_list* list, struct node* found_node) {
 
         list->size -= 1;
         free(found_node);
+        found_node = NULL;
     } else if(found_node == list->end) {
         list->end = found_node->prev;
+        list->end->next = NULL;
         list->size -= 1;
         free(found_node);
+        found_node = NULL;
     } else {
         found_node->prev->next = found_node->next;
         found_node->next->prev = found_node->prev;
@@ -168,6 +173,7 @@ int array_list_delete(array_list* list, struct node* found_node) {
 
         list->size -= 1;
         free(found_node);
+        found_node = NULL;
     }
 
     return 0;

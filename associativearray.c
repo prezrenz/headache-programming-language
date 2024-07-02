@@ -21,6 +21,7 @@ int assoc_array_free(assoc_array* list) {
     }
 
     free(list);
+    list = NULL;
 
     return 0;
 }
@@ -106,19 +107,24 @@ int assoc_array_delete(assoc_array* list, struct kv_node* found_node) {
         list->end = NULL;
         list->size = 0;
         free(found_node);
+        found_node = NULL;
     } else if(found_node == list->head) {
         list->head = found_node->next; 
         list->size -= 1;
         free(found_node);
+        found_node = NULL;
     } else if(found_node == list->end) {
         list->end = found_node->prev;
+        list->end->next = NULL;
         list->size -= 1;
         free(found_node);
+        found_node = NULL;
     } else {
         found_node->prev->next = found_node->next;
         found_node->next->prev = found_node->prev;
         list->size -= 1;
         free(found_node);
+        found_node = NULL;
     }
 
     return 0;
@@ -231,7 +237,7 @@ void assoc_array_test() {
         fprintf(stderr, "Error: get failed\n");
         exit(1);
     }
-    printf("KEY: DATA1; VALUE: %s", n);
+    printf("KEY: DATA1; VALUE: %s\n", n);
 
     printf("** GETTING DATA2\n");
     n = assoc_array_get_value(test_list, "DATA2");
@@ -239,7 +245,7 @@ void assoc_array_test() {
         fprintf(stderr, "Error: get failed\n");
         exit(1);
     }
-    printf("KEY: DATA2; VALUE: %s", n);
+    printf("KEY: DATA2; VALUE: %s\n", n);
 
     printf("** GETTING DATA3\n");
     
@@ -248,7 +254,7 @@ void assoc_array_test() {
         fprintf(stderr, "Error: get failed\n");
         exit(1);
     }
-    printf("KEY: DATA3; VALUE: %s", n);
+    printf("KEY: DATA3; VALUE: %s\n", n);
     
     // Testing Delete
     
