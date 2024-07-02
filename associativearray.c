@@ -26,7 +26,7 @@ int assoc_array_free(assoc_array* list) {
 }
 
 int assoc_array_append(assoc_array* list, char* key, char* value) {
-    struct kv_node* found_node = assoc_array_get(list, key);
+    char* found_node = assoc_array_get_value(list, key);
     if(found_node != NULL) {
         return 1; // key already exists
     }
@@ -54,6 +54,28 @@ int assoc_array_append(assoc_array* list, char* key, char* value) {
     list->end = new_node;
 
     return 0;
+}
+
+char* assoc_array_get_value(assoc_array* list, char* key) {
+    if(list->size == 0) {
+        return NULL; // should report list is empty
+    }
+
+    struct kv_node* current_node;
+    current_node = list->head;
+    while(current_node != NULL) {
+        if(strcmp(current_node->key, key) == 0) {
+            break;
+        }
+
+        current_node = current_node->next;
+    }
+
+    if(current_node == NULL) {
+        return NULL; // should report data not found
+    }
+
+    return current_node->value;
 }
 
 struct kv_node* assoc_array_get(assoc_array* list, char* key) {
@@ -132,7 +154,7 @@ int assoc_array_empty(assoc_array* list) {
     return status;
 }
 
-void node_print(struct kv_node* n) {
+void kv_node_print(struct kv_node* n) {
     if(n == NULL) printf("HUH!?");
 
     printf("\nKEY: %s\n", n->key);
@@ -156,29 +178,29 @@ void assoc_array_print(assoc_array* list) {
 
     struct kv_node* current_node = list->head;
     while(current_node != NULL) {
-        node_print(current_node);
+        kv_node_print(current_node);
         current_node = current_node->next;
     }
 }
 
 // DEBUG ONLY, exits without cleaning is bad
 void assoc_array_test() {
-    printf("* BEGINNING LIST TEST\n\n");
+    printf("* BEGINNING ASSOCIATIVE ARRAY TEST\n\n");
 
-    printf("** CREATING NEW LIST\n");
+    printf("** CREATING NEW ASSOCIATIVE ARRAY\n");
     assoc_array* test_list = assoc_array_new();
     if(test_list == NULL) {
-        fprintf(stderr, "Error: could not make new Array List\n");
+        fprintf(stderr, "Error: could not make new Associative Array\n");
         exit(1);
     }
 
-    printf("*** Successfully made new list\n");
+    printf("*** Successfully made new Associative Array\n");
     assoc_array_print(test_list);
 
     int status = 0;
 
     // Testing Append
-    printf("** APPENDING TO LIST\n");
+    printf("** APPENDING TO ARRAY\n");
     status = assoc_array_append(test_list, "DATA1", "DATA1");
     if(status > 0) {
         fprintf(stderr, "Error: append failed, status %d\n", status);
@@ -186,7 +208,7 @@ void assoc_array_test() {
     }
     assoc_array_print(test_list);
  
-    printf("** APPENDING TO LIST\n");
+    printf("** APPENDING TO ARRAY\n");
     status = assoc_array_append(test_list, "DATA2", "DATA2");
     if(status > 0) {
         fprintf(stderr, "Error: append failed, status %d\n", status);
@@ -204,33 +226,33 @@ void assoc_array_test() {
 
     // Testing Get
     printf("** GETTING DATA1\n");
-    struct kv_node* n = assoc_array_get(test_list, 0);
+    char* n = assoc_array_get_value(test_list, "DATA1");
     if(n == NULL) {
         fprintf(stderr, "Error: get failed\n");
         exit(1);
     }
-    node_print(n);
+    printf("KEY: DATA1; VALUE: %s", n);
 
     printf("** GETTING DATA2\n");
-    n = assoc_array_get(test_list, "DATA2");
+    n = assoc_array_get_value(test_list, "DATA2");
     if(n == NULL) {
         fprintf(stderr, "Error: get failed\n");
         exit(1);
     }
-    node_print(n);
+    printf("KEY: DATA2; VALUE: %s", n);
 
     printf("** GETTING DATA3\n");
     
-    n = assoc_array_get(test_list, "DATA3");
+    n = assoc_array_get_value(test_list, "DATA3");
     if(n == NULL) {
         fprintf(stderr, "Error: get failed\n");
         exit(1);
     }
-    node_print(n);
+    printf("KEY: DATA3; VALUE: %s", n);
     
     // Testing Delete
     
-    printf("** DELETING DATA2 BY ID\n");
+    printf("** DELETING DATA2 BY KEY\n");
     status = assoc_array_delete_key(test_list, "DATA2");
     if(status > 0) {
         fprintf(stderr, "Error: failed to delete, status %d\n", status);
@@ -238,7 +260,7 @@ void assoc_array_test() {
     }
     assoc_array_print(test_list);
 
-    printf("** DELETING DATA3 BY VALUE\n");
+    printf("** DELETING DATA3 BY KEY\n");
     status = assoc_array_delete_key(test_list, "DATA3");
     if(status > 0) {
         fprintf(stderr, "Error: failed to delete, status %d\n", status);
@@ -248,7 +270,7 @@ void assoc_array_test() {
 
     // Testing Empty
 
-    printf("** EMPTYING LIST\n");
+    printf("** EMPTYING ARRAY\n");
     status = assoc_array_empty(test_list);
     if(status > 0) {        
         fprintf(stderr, "Error: failed to empty, status %d\n", status);
@@ -258,12 +280,12 @@ void assoc_array_test() {
 
     // Testing Free
 
-    printf("** FREEING TEST LIST\n");
+    printf("** FREEING ASSOCIATIVE ARRAY\n");
     status = assoc_array_free(test_list);
     if(status > 0) {
         fprintf(stderr, "Error: failed to free, status %d\n", status);
         exit(1);
     }
 
-    printf("SUCCESSFULLY FINISHED ARRAY LIST TESTS: NO ERRORS\n");
+    printf("SUCCESSFULLY FINISHED ASSOCIATIVE ARRAY TESTS: NO ERRORS\n");
 }

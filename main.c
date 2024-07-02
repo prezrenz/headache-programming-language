@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "arraylist.h"
+#include "associativearray.h"
 
 typedef struct {
     char* operator;
@@ -78,7 +79,7 @@ int main(int argc, char** argv)
         printf("Successfully opened file");
     }*/
 
-    array_list_test();
+    assoc_array_test();
 
     return 0;
 }
