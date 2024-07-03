@@ -2,9 +2,36 @@
 #include "arraylist.h"
 #include "associativearray.h"
 
+enum TYPE {
+    NUMBER,
+    FUNCTION,
+    ARRAY
+};
+
+typedef struct {
+    enum TYPE type;
+    
+    union {
+        unsigned char number;
+        
+        struct {
+            int arg_count;
+            char** args;
+            char** ops;
+        } function;
+
+        struct  {
+            int curr_index;
+            unsigned char arr[256];
+        } array;
+    
+    } data; 
+
+} symbol;
+
 typedef struct {
     char* operator;
-    char* operands[32];
+    char* operands[255];
 } operation;
 
 /* LEXER */
