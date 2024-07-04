@@ -1,22 +1,103 @@
 #include <stdio.h>
+#include <string.h>
+#include <ctype.h>
 #include "arraylist.h"
 #include "associativearray.h"
-#include "commons.h"
+
+/* ENVIRONMENT */
+
+assoc_array* environment;
 
 /* READ */
 
+char is_not_ending(char c) {
+    return c != '\0' && c != ')';
+}
+
+char* parse_name(char** input) {
+    char c = **input;
+    char* name = malloc(256);
+    *name = '\0';
+
+    while(c != ' ' && is_not_ending(c)) {
+        if(isalnum(c)) {
+            strncat(name, &c, 1);
+        }
+        else {
+            return NULL; // found non-alphanumeric in name
+        }
+
+        (*input)++;
+        c = **input;
+    }
+
+    if(c == '\0') {
+        return NULL;
+    }
+
+    if(c == ')') {
+        (*input)--;
+    }
+
+    printf("%s", name);
+    return name;
+}
+
 int read(char* input) {
     char c;
-    char op[256];
+    array_list* list;
+    list = array_list_new();
 
     puts(&input[0]);
 
     if((c = input[0]) == '(') {
         input++;
         c = *input; // skip the (
-        while(c != ')' && c != '\0') {
+        while(is_not_ending(c)) {
+            switch (c) {
+                case '!':
+                    input++;
+                    c = *input;
+                    if(c == '!') {
+                        array_list_append(list, "!!");
+                    }
+                    else {
+                        fprintf(stderr, "Error: expected ! after !");
+                        return 2;
+                    }
+                    break;
+                case '@':
+                    input++;
+                    c = *input;
+                    if(c == '@') {
+                        array_list_append(list, "@@");
+                    }
+                    else {
+                        fprintf(stderr, "Error: expected @ after @");
+                        return 2;
+                    }
+                    break;
+                case ' ':
+                case '\n':
+                    break;
+                default:
+                   if(isalnum(c)) {
+                       char* new_name = strdup(parse_name(&input));
+
+                       if(new_name == NULL) {
+                           return 3; // failed to parse name
+                       }
+
+                       array_list_append(list, new_name);
+                   }
+                   else {
+                       printf("UNIMPLEMENTED\n");
+                   }
+            }
+
             putc(c, stdout);
             putc('\n', stdout);
+
             input++;
             c = *input;
         }
@@ -26,6 +107,8 @@ int read(char* input) {
             return 2;
         }
 
+        array_list_print(list);
+
         return 0;
     }
     else {
@@ -33,6 +116,10 @@ int read(char* input) {
         return 1;
     }
 }
+
+/* EVALUATE */
+
+/* PRINT */
 
 int main(int argc, char** argv)
 {
