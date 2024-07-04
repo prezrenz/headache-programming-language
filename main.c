@@ -1,42 +1,11 @@
 #include <stdio.h>
 #include "arraylist.h"
 #include "associativearray.h"
+#include "commons.h"
 
-enum TYPE {
-    NUMBER,
-    FUNCTION,
-    ARRAY
-};
+/* READ */
 
-typedef struct {
-    enum TYPE type;
-    
-    union {
-        unsigned char number;
-        
-        struct {
-            int arg_count;
-            char** args;
-            char** ops;
-        } function;
-
-        struct  {
-            int curr_index;
-            unsigned char arr[256];
-        } array;
-    
-    } data; 
-
-} symbol;
-
-typedef struct {
-    char* operator;
-    char* operands[255];
-} operation;
-
-/* LEXER */
-
-int scan(char* input) {
+int read(char* input) {
     char c;
     char op[256];
 
@@ -67,7 +36,7 @@ int scan(char* input) {
 
 int main(int argc, char** argv)
 {
-    /*FILE* program;
+    FILE* program;
 
     if(argc == 1) {
         char input[2048];
@@ -79,7 +48,7 @@ int main(int argc, char** argv)
             fputs("headache> ", stdout);
             fgets(input, 2048, stdin);
 
-            if(scan(input) != 0) {
+            if(read(input) != 0) {
                 return 1;
             }
         }
@@ -94,20 +63,17 @@ int main(int argc, char** argv)
         return 2;
     }
     else {
-         Start of program 
+        // Start of program 
         char line[1024];
 
         while(fgets(line, 1024, program)) {
-            if(scan(line) != 0) {
+            if(read(line) != 0) {
                 return 1;
             }
         }
 
         printf("Successfully opened file");
-    }*/
-
-    array_list_test();
-    assoc_array_test();
+    }
 
     return 0;
 }
