@@ -3,11 +3,13 @@
 
 typedef enum{
     NUMBER,
-    FUNCTION,
-    ARRAY
+    LAMBDA,
+    ARRAY,
+    SYMBOL,
+    PAIR
 } object_type;
 
-typedef struct {
+typedef struct object {
     object_type type;
     
     union {
@@ -25,6 +27,15 @@ typedef struct {
             int curr_index;
             unsigned char arr[256];
         } array;
+
+        struct {
+            char* value;
+        } symbol;
+
+        struct {
+            struct object* left;
+            struct object* right;
+        } pair;
     
     } data; 
 

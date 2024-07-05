@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include "arraylist.h"
 #include "associativearray.h"
+#include "commons.h"
 
 /* ENVIRONMENT */
 
@@ -43,7 +44,81 @@ char* parse_name(char** input) {
     return name;
 }
 
-int read(char* input) {
+int is_whitespace(char c) {
+    return c == ' ' || c == '\n';
+}
+
+object* make_symbol(char* value) {
+    object* obj;
+
+    obj = malloc(sizeof(object));
+    obj->type = SYMBOL;
+    obj->data.symbol.value = strdup(value);
+
+    return obj;
+}
+
+object* make_pair(object* left, object* right) {
+    object* obj;
+
+    obj = malloc(sizeof(object));
+    obj->type = PAIR;
+    obj->data.pair.left = left;
+    obj->data.pair.right = right;
+
+    return obj;
+}
+
+object* read(FILE* input);
+
+object* read_pair(FILE* input) {
+    char c;
+    object* left;
+    object* right;
+
+    c = getc(input);
+    if(c == ')') {
+        return NULL;
+    }
+
+    left = read(input);
+    right = read_pair(input);
+
+    return make_pair(left, right);
+}
+
+object* read(FILE* input) {
+    char c;
+    c = getc(input);
+
+    if(c == '(') {
+        return read_pair(input);
+    } else if(c == '@') {
+        c = getc(input);
+        if(c == '@') {
+            object* obj = make_symbol("@@");
+            return obj;
+        } else {
+            fprintf(stderr, "Error: expected @ after @\n");
+            exit(1);
+        }
+    } else if(c == '!') {
+        c = getc(input);
+        if(c == '!') {
+            object* obj = make_symbol("!!");
+            return obj;
+        } else {
+            fprintf(stderr, "Error: expected ! after !\n");
+            exit(1);
+        }
+    } else {
+        fprintf(stderr, "Error: expected (");
+        return NULL;
+    }
+
+}
+
+/* int read(char* input) {
     char c;
     array_list* list;
     list = array_list_new();
@@ -115,7 +190,7 @@ int read(char* input) {
         fprintf(stderr, "Error: expected (");
         return 1;
     }
-}
+} */
 
 /* EVALUATE */
 
@@ -133,34 +208,31 @@ int main(int argc, char** argv)
 
         while (1) {
             fputs("headache> ", stdout);
-            fgets(input, 2048, stdin);
 
-            if(read(input) != 0) {
-                return 1;
-            }
+            read(stdin);
         }
     }
-    else if(argc > 2)
+    else if(argc > 1)
     {
         fprintf(stderr, "Usage: headache (program)\n\tOmit program to enter REPL");
         return 1;
     }
-    else if((program = fopen(argv[1], "r")) == NULL) {
-        fprintf(stderr, "Error: Failed to open file %s", argv[1]);
-        return 2;
-    }
-    else {
-        // Start of program 
-        char line[1024];
-
-        while(fgets(line, 1024, program)) {
-            if(read(line) != 0) {
-                return 1;
-            }
-        }
-
-        printf("Successfully opened file");
-    }
+    /* else if((program = fopen(argv[1], "r")) == NULL) { */
+    /*     fprintf(stderr, "Error: Failed to open file %s", argv[1]); */
+    /*     return 2; */
+    /* } */
+    /* else { */
+    /*     // Start of program  */
+    /**/
+    /*     while(fgets(line, 1024, program)) { */
+    /*         char* line_ptr = line; */
+    /*         if(read(&line_ptr) != 0) { */
+    /*             return 1; */
+    /*         } */
+    /*     } */
+    /**/
+    /*     printf("Successfully opened file"); */
+    /* } */
 
     return 0;
 }
