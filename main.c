@@ -181,27 +181,23 @@ int main(int argc, char** argv)
             printf("\n");
         }
     }
-    else if(argc > 1)
+    else if(argc > 2)
     {
         fprintf(stderr, "Usage: headache (program)\n\tOmit program to enter REPL");
         return 1;
     }
-    /* else if((program = fopen(argv[1], "r")) == NULL) { */
-    /*     fprintf(stderr, "Error: Failed to open file %s", argv[1]); */
-    /*     return 2; */
-    /* } */
-    /* else { */
-    /*     // Start of program  */
-    /**/
-    /*     while(fgets(line, 1024, program)) { */
-    /*         char* line_ptr = line; */
-    /*         if(read(&line_ptr) != 0) { */
-    /*             return 1; */
-    /*         } */
-    /*     } */
-    /**/
-    /*     printf("Successfully opened file"); */
-    /* } */
+    else if((program = fopen(argv[1], "r")) == NULL) {
+        fprintf(stderr, "Error: Failed to open file %s", argv[1]);
+        return 2;
+    }
+    else {
+        // Start of program
+        while (!feof(program)) {
+            print(read(program));
+            printf("\n");
+        }
+        printf("Successfully opened file");
+    }
 
     return 0;
 }
