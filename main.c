@@ -1,51 +1,37 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
-#include "arraylist.h"
 #include "associativearray.h"
 #include "commons.h"
 
-/* ENVIRONMENT */
+/* GLOBALS */
 
 assoc_array* environment;
 
-/* READ */
+object* the_empty_list;
 
-char is_not_ending(char c) {
-    return c != '\0' && c != ')';
+/* HELPERS */
+
+object* pair_left(object* obj) {
+    return obj->data.pair.left; // TODO: check if type is pair
 }
 
-char* parse_name(char** input) {
-    char c = **input;
-    char* name = malloc(256);
-    *name = '\0';
+object* pair_right(object* obj) {
+    return obj->data.pair.right; // TODO: check if type is pair
+}
 
-    while(c != ' ' && is_not_ending(c)) {
-        if(isalnum(c)) {
-            strncat(name, &c, 1);
-        }
-        else {
-            return NULL; // found non-alphanumeric in name
-        }
+/* READ */
 
-        (*input)++;
-        c = **input;
-    }
-
-    if(c == '\0') {
-        return NULL;
-    }
-
-    if(c == ')') {
-        (*input)--;
-    }
-
-    printf("%s", name);
-    return name;
+char is_ending(char c) {
+    return c == '\0' && c == ')';
 }
 
 int is_whitespace(char c) {
     return c == ' ' || c == '\n';
+}
+
+int is_delimiter(char c) {
+    return is_whitespace(c) || c == EOF || c == ')';
 }
 
 object* make_symbol(char* value) {
@@ -78,10 +64,23 @@ object* read_pair(FILE* input) {
 
     c = getc(input);
     if(c == ')') {
-        return NULL;
+        return the_empty_list;
     }
 
+    if(is_delimiter(c)) {
+        fprintf(stderr, "Error: expected )\n");
+        exit(1);
+    }
+    
+    ungetc(c, input);
     left = read(input);
+    
+    c = getc(input);
+    while(is_whitespace(c) && c != EOF) {
+        c = getc(input);
+    }
+    ungetc(c, input);
+    
     right = read_pair(input);
 
     return make_pair(left, right);
@@ -91,125 +90,95 @@ object* read(FILE* input) {
     char c;
     c = getc(input);
 
+    while(is_whitespace(c) && c != EOF) {
+        c = getc(input);
+    }
+
+#define BUFFER_MAX 1024
+    int i = 0;
+    char buffer[BUFFER_MAX];
+
     if(c == '(') {
         return read_pair(input);
-    } else if(c == '@') {
-        c = getc(input);
-        if(c == '@') {
-            object* obj = make_symbol("@@");
-            return obj;
-        } else {
-            fprintf(stderr, "Error: expected @ after @\n");
-            exit(1);
+    } else  {
+        // Read a symbol
+        while(!is_delimiter(c)) {
+
+            if(i < BUFFER_MAX - 1) {
+                buffer[i] = c;
+                i++;
+            } else {
+                fprintf(stderr, "Error: symbol name too long, max is %d\n", BUFFER_MAX);
+                exit(1);
+            }
+
+            c = getc(input);
         }
-    } else if(c == '!') {
-        c = getc(input);
-        if(c == '!') {
-            object* obj = make_symbol("!!");
-            return obj;
-        } else {
-            fprintf(stderr, "Error: expected ! after !\n");
-            exit(1);
-        }
-    } else {
-        fprintf(stderr, "Error: expected (");
-        return NULL;
+        ungetc(c, input);
+        buffer[i] = '\0';
+        return make_symbol(buffer);
     }
 
 }
-
-/* int read(char* input) {
-    char c;
-    array_list* list;
-    list = array_list_new();
-
-    puts(&input[0]);
-
-    if((c = input[0]) == '(') {
-        input++;
-        c = *input; // skip the (
-        while(is_not_ending(c)) {
-            switch (c) {
-                case '!':
-                    input++;
-                    c = *input;
-                    if(c == '!') {
-                        array_list_append(list, "!!");
-                    }
-                    else {
-                        fprintf(stderr, "Error: expected ! after !");
-                        return 2;
-                    }
-                    break;
-                case '@':
-                    input++;
-                    c = *input;
-                    if(c == '@') {
-                        array_list_append(list, "@@");
-                    }
-                    else {
-                        fprintf(stderr, "Error: expected @ after @");
-                        return 2;
-                    }
-                    break;
-                case ' ':
-                case '\n':
-                    break;
-                default:
-                   if(isalnum(c)) {
-                       char* new_name = strdup(parse_name(&input));
-
-                       if(new_name == NULL) {
-                           return 3; // failed to parse name
-                       }
-
-                       array_list_append(list, new_name);
-                   }
-                   else {
-                       printf("UNIMPLEMENTED\n");
-                   }
-            }
-
-            putc(c, stdout);
-            putc('\n', stdout);
-
-            input++;
-            c = *input;
-        }
-
-        if(c == '\0') {
-            fprintf(stderr, "Error: ending ) not found");
-            return 2;
-        }
-
-        array_list_print(list);
-
-        return 0;
-    }
-    else {
-        fprintf(stderr, "Error: expected (");
-        return 1;
-    }
-} */
 
 /* EVALUATE */
 
 /* PRINT */
 
+void print(object* obj);
+
+void print_pair(object* obj) {
+    object* left;
+    object* right;
+
+    left = pair_left(obj);
+    right = pair_right(obj);
+    print(left);
+
+    if(right->type == PAIR) {
+        printf(" ");
+        print_pair(right);
+    } else if(right->type == EMPTY_LIST) {
+        return;
+    }
+}
+
+void print(object* obj) {
+    switch (obj->type) {
+        case EMPTY_LIST:
+            printf("()");
+            break;
+        case SYMBOL:
+            printf("%s", obj->data.symbol.value);
+            break;
+        case PAIR:
+            printf("(");
+            print_pair(obj);
+            printf(")");
+            break;
+        default:
+            fprintf(stderr, "Error: unimplemented or unknown object type %d\n", obj->type);
+            exit(1);
+    }
+}
+
 int main(int argc, char** argv)
 {
     FILE* program;
 
+    the_empty_list = malloc(sizeof(object));
+    the_empty_list->type = EMPTY_LIST;
+
     if(argc == 1) {
         char input[2048];
 
-        puts("Headache REPL");
+        puts("Headache REPL\n");
         puts("Press Ctrl+C to Exit\n");
 
         while (1) {
-            fputs("headache> ", stdout);
-
-            read(stdin);
+            printf("headache> ");
+            print(read(stdin));
+            printf("\n");
         }
     }
     else if(argc > 1)

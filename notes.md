@@ -91,12 +91,20 @@ argument = SYMBOL / command
 - You can use your entire keyboard to name symbols.
 
 ### Tasks
-- [ ] Read input as list.
+- [x] Read input as list.
     - Read function: Eat ( or read symbol, go to Read pair if found
     - Read pair: check if ), return empty list if found
     - Read pair: otherwise, call Read function
     - Read function: if while current character is not whitespace/null terminator/ ) then add character to buffer
     - Read function: on encounter whitespace, stop and return as symbol the buffer, if null or ) then error
     - Read pair: on recieving left, go to right and read pair again
-- [ ] Print the returned list as a continuous list.
+- [x] Print the returned list as a continuous list.
     - Print groupings properly
+- [ ] Fix reading bugs
+    - [ ] entering ) enters an endless loop
+    - [ ] entering ( followed by anything else constantly asks for input
+    - [ ]  entering (sym)bol will leave bol in buffer (optional)
+- [ ] Implement environment
+    - [ ] Read Section 3.2 of SICP
+    - [ ] Read Section 4.1.3 of SICP
+    - [ ] Write more tasks, outline the algorithm for environment implementation

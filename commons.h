@@ -6,6 +6,7 @@ typedef enum{
     LAMBDA,
     ARRAY,
     SYMBOL,
+    EMPTY_LIST,
     PAIR
 } object_type;
 
@@ -17,12 +18,6 @@ typedef struct object {
             unsigned char value;
         } number;
         
-        struct {
-            int arg_count;
-            char** args;
-            char** ops;
-        } lambda;
-
         struct  {
             int curr_index;
             unsigned char arr[256];
