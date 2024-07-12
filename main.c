@@ -6,9 +6,9 @@
 
 /* GLOBALS */
 
-assoc_array* environment;
-
-object* the_empty_list;
+object* the_empty_list; // Essentially just a null to end lists
+object* the_empty_environment;
+object* the_global_environment;
 
 /* HELPERS */
 
@@ -121,6 +121,26 @@ object* read(FILE* input) {
 
 }
 
+/* ENVIRONMENT */
+
+object* make_frame(object* vars, object* vals) {
+    return make_pair(vars, vals);
+}
+
+object* extend_environment(object* vars, object* vals, object* base_env) {
+    return make_pair(make_frame(vars, vals), base_env);
+}
+
+object* setup_environment() {
+    object* initial_env;
+
+    initial_env = extend_environment(the_empty_list,
+                                    the_empty_list,
+                                    the_empty_environment);
+
+    return initial_env;
+}
+
 /* EVALUATE */
 
 /* PRINT */
@@ -166,8 +186,12 @@ int main(int argc, char** argv)
 {
     FILE* program;
 
+    /* INITIALIZATION */
+
     the_empty_list = malloc(sizeof(object));
     the_empty_list->type = EMPTY_LIST;
+
+    /* START */
 
     if(argc == 1) {
         char input[2048];
