@@ -12,12 +12,20 @@ object* the_global_environment;
 
 /* HELPERS */
 
-object* pair_left(object* obj) {
+object* get_pair_left(object* obj) {
     return obj->data.pair.left; // TODO: check if type is pair
 }
 
-object* pair_right(object* obj) {
+object* get_pair_right(object* obj) {
     return obj->data.pair.right; // TODO: check if type is pair
+}
+
+void set_pair_left(object* obj, object* val) {
+    obj->data.pair.left = val;
+}
+
+void set_pair_right(object* obj, object* val) {
+    obj->data.pair.right = val;
 }
 
 /* READ */
@@ -123,8 +131,29 @@ object* read(FILE* input) {
 
 /* ENVIRONMENT */
 
+object* get_enclosing_environment(object* env) {
+    return get_pair_right(env);
+}
+
+object* get_first_frame(object* env) {
+    return get_pair_left(env);
+}
+
+object* get_frame_vars(object* frame) {
+    return get_pair_left(frame);
+}
+
+object* get_frame_vals(object* frame) {
+    return get_pair_right(frame);
+}
+
 object* make_frame(object* vars, object* vals) {
     return make_pair(vars, vals);
+}
+
+void add_binding_to_frame(object* var, object* val, object* frame) {
+    set_pair_left(frame, make_pair(var, get_pair_left(frame)));
+    set_pair_right(frame, make_pair(val, get_pair_right(frame)));
 }
 
 object* extend_environment(object* vars, object* vals, object* base_env) {
@@ -151,8 +180,8 @@ void print_pair(object* obj) {
     object* left;
     object* right;
 
-    left = pair_left(obj);
-    right = pair_right(obj);
+    left = get_pair_left(obj);
+    right = get_pair_right(obj);
     print(left);
 
     if(right->type == PAIR) {

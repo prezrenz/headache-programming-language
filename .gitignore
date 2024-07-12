@@ -1,3 +1,5 @@
 justfile
 justfile~
+compile_commands.json
 *.exe
+.cache

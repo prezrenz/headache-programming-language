@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Wall -Wextra -g -I.
+CFLAGS = -std=c99 -Wall -Wextra -g -I.
 
 SOURCES = main.c arraylist.c associativearray.c
  
