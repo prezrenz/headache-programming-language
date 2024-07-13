@@ -160,6 +160,79 @@ object* extend_environment(object* vars, object* vals, object* base_env) {
     return make_pair(make_frame(vars, vals), base_env);
 }
 
+object* lookup_var_val(object* var, object* env) {
+    object* frame;
+    object* vars;
+    object* vals;
+
+    while (!(env == the_empty_list)) {
+        frame = get_first_frame(env);
+        vars = get_frame_vars(frame);
+        vals = get_frame_vals(frame);
+
+        while (!(env == the_empty_list)) {
+            if(var == get_pair_left(vars)) {
+                return  get_pair_left(vals);
+            }
+
+            vars = get_pair_right(vars);
+            vals = get_pair_right(vals);
+        }
+
+        env = get_enclosing_environment(env);
+    }
+    fprintf(stderr, "Error: variable not defined\n");
+    exit(1);
+}
+
+void set_var_val(object* var, object* val, object* env) {
+    object* frame;
+    object* vars;
+    object* vals;
+
+    while (!(env == the_empty_list)) {
+        frame = get_first_frame(env);
+        vars = get_frame_vars(frame);
+        vals = get_frame_vals(frame);
+
+        while (!(env == the_empty_list)) {
+            if(var == get_pair_left(vars)) {
+                set_pair_left(vals, val);
+                return;
+            }
+
+            vars = get_pair_right(vars);
+            vals = get_pair_right(vals);
+        }
+
+        env = get_enclosing_environment(env);
+    }
+    fprintf(stderr, "Error: variable not defined\n");
+    exit(1);
+}
+
+void define_var(object* var, object* val, object* env) {
+    object* frame;
+    object* vars;
+    object* vals;
+
+    frame = get_first_frame(env);
+    vars = get_frame_vars(frame);
+    vals = get_frame_vals(frame);
+
+    while (!(env == the_empty_list)) {
+        if(var == get_pair_left(vars)) {
+            set_pair_left(vals, val);
+            return;
+        }
+
+        vars = get_pair_right(vars);
+        vals = get_pair_right(vals);
+    }
+
+    add_binding_to_frame(var, val, frame);
+}
+
 object* setup_environment() {
     object* initial_env;
 
