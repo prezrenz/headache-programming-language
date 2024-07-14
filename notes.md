@@ -104,13 +104,13 @@ argument = SYMBOL / command
     - [ ] entering ) enters an endless loop
     - [ ] entering ( followed by anything else constantly asks for input
     - [ ] entering (sym)bol will leave bol in buffer (optional)
-- [ ] Implement environment
+- [x] Implement environment
     - [x] Read Section 3.2 of SICP
     - [x] Read Section 4.1.3 of SICP
     - [x] Write more tasks, outline the algorithm for environment implementation
     - [x] Write environment as a pair, with left pointing to a frame and right pointing to the enclosing environment. If the enclosing environment is the empty list then current environment is the global environment. A frame is a list of vars and corresponding vals, with the left having the vars and the right being a list of values.
     - [x] Implement making a frame, adding variables, extending environment, and looking up values
-    - [ ] Implement defining symbols, with initial value of 0.
+    - [x] Implement defining symbols, with initial value of 0.
         - [x] Implement symbol table and add !! to it.
-        - [ ] Implement evaluating of symbols and !! define
-    - [ ] Implement printing the value of the defined symbol
+        - [x] Implement evaluating of symbols and !! define
+    - [x] Implement printing the value of the defined symbol

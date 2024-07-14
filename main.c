@@ -6,7 +6,7 @@
 
 typedef enum{
     NUMBER,
-    LAMBDA,
+    COMP_PROC,
     ARRAY,
     SYMBOL,
     EMPTY_LIST,
@@ -96,7 +96,7 @@ object* make_symbol(char* value) {
         if(strcmp(get_pair_left(sym)->data.symbol.value, value) == 0) {
             return get_pair_left(sym);
         }
-        sym = get_pair_right(symbol_table);
+        sym = get_pair_right(sym);
     }
 
     obj = malloc(sizeof(object));
@@ -116,6 +116,17 @@ object* make_pair(object* left, object* right) {
     obj->data.pair.right = right;
 
     return obj;
+}
+
+object* make_number(char num) {
+    object* obj;
+
+    obj = malloc(sizeof(object));
+    obj->type = NUMBER;
+    obj->data.number.value = num;
+
+    return obj;
+
 }
 
 object* read(FILE* input);
@@ -225,7 +236,7 @@ object* lookup_var_val(object* var, object* env) {
         vars = get_frame_vars(frame);
         vals = get_frame_vals(frame);
 
-        while (!is_empty_list(env)) {
+        while (!is_empty_list(vars)) {
             if(var == get_pair_left(vars)) {
                 return  get_pair_left(vals);
             }
@@ -250,7 +261,7 @@ void set_var_val(object* var, object* val, object* env) {
         vars = get_frame_vars(frame);
         vals = get_frame_vals(frame);
 
-        while (!is_empty_list(env)) {
+        while (!is_empty_list(vars)) {
             if(var == get_pair_left(vars)) {
                 set_pair_left(vals, val);
                 return;
@@ -275,7 +286,7 @@ void define_var(object* var, object* val, object* env) {
     vars = get_frame_vars(frame);
     vals = get_frame_vals(frame);
 
-    while (!is_empty_list(env)) {
+    while (!is_empty_list(vars)) {
         if(var == get_pair_left(vars)) {
             set_pair_left(vals, val);
             return;
@@ -299,6 +310,30 @@ object* setup_environment() {
 }
 
 /* EVALUATE */
+
+int is_define_number(object* obj) {
+    return (get_pair_left(obj)->type == SYMBOL) && (get_pair_left(obj) == define_num_symbol); // NOTE: does this work?
+}
+
+object* eval(object* obj, object* env) {
+    switch (obj->type) {
+        case EMPTY_LIST:
+            return obj;
+        case SYMBOL:
+            return lookup_var_val(obj, env);
+        case PAIR:
+            if(is_define_number(obj)) {
+                define_var(get_pair_left(get_pair_right(obj)), make_number(0), env);
+                return lookup_var_val(get_pair_left(get_pair_right(obj)), env);
+            } else {
+                fprintf(stderr, "Eval error: unimplemented or illegal\n");
+                exit(1); // TODO: parse compound procedures
+            }
+        default:
+            fprintf(stderr, "Eval Error: unimplemented or illegal\n");
+            exit(1);
+    }
+}
 
 /* PRINT */
 
@@ -333,6 +368,11 @@ void print(object* obj) {
             print_pair(obj);
             printf(")");
             break;
+        case NUMBER:
+            printf("%d", obj->data.number.value);
+            break;
+        case ARRAY:
+            printf("%d", obj->data.array.arr[obj->data.array.curr_index]);
         default:
             fprintf(stderr, "Error: unimplemented or unknown object type %d\n", obj->type);
             exit(1);
@@ -351,14 +391,16 @@ int main(int argc, char** argv)
     // Setup symbol table
     symbol_table = the_empty_list;
     define_num_symbol = make_symbol("!!");
-    define_array_symbol = make_symbol("[]");
-    define_func_symbol = make_symbol("^^");
+    define_array_symbol = make_symbol("[]"); 
+    define_func_symbol = make_symbol("^^"); 
+
+    // Setup environment
+    the_empty_environment = the_empty_list;
+    the_global_environment = setup_environment();
 
     /* START */
 
     if(argc == 1) {
-        char input[2048];
-
         puts("Headache REPL\n");
         puts("Press Ctrl+C to Exit\n");
 
@@ -380,10 +422,10 @@ int main(int argc, char** argv)
     else {
         // Start of program
         while (!feof(program)) {
-            print(read(program));
+            print(eval(read(program), the_global_environment));
             printf("\n");
         }
-        printf("Successfully opened file");
+        printf("\n\nSuccessfully executed file");
     }
 
     return 0;
