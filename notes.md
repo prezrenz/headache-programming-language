@@ -89,6 +89,9 @@ argument = SYMBOL / command
 - Commands are represented as lists. Lists are made as pairs with left and right, with left containing the data and right pointing to the next item on the list.
 - Entering a symbol will look for that symbol and print its value. If its an array, the whole array is printed with its values and index and current index. If it's a number, it will print the number. If it's a procedure, it will print either <primitive proc> or <compound proc>
 - You can use your entire keyboard to name symbols.
+- Only 0 is false, any none 0 value is true.
+- The 4 checks return 0 or 1 for true or false.
+- The (?? <cond> <if> <else>) will evaluate if cond is 0 or 1 and execute <if> if 1 and <else> if 0.
 
 ### Tasks
 - [x] Read input as list.
@@ -114,3 +117,13 @@ argument = SYMBOL / command
         - [x] Implement symbol table and add !! to it.
         - [x] Implement evaluating of symbols and !! define
     - [x] Implement printing the value of the defined symbol
+- [ ] Implement array definition
+- [ ] Implement stacking + and -
+    - [ ] Add stacking to struct and enum, with len
+    - [ ] Read + or - and error if any other symbol in string, stop on delimiter and store len
+    - [ ] In eval pair, check if stacking + or - enum type, if so call set var and add len to var
+    - [ ] Return lookup var val
+    - [ ] Write more tasks
+- [ ] Implement ?? if command
+    - [ ] Implement checking if symbol is 0 or 1
+
