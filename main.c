@@ -9,6 +9,10 @@
 object* the_empty_list; // Essentially just a null to end lists
 object* the_empty_environment;
 object* the_global_environment;
+object* symbol_table;
+object* define_num_symbol;
+object* define_array_symbol;
+object* define_func_symbol;
 
 /* HELPERS */
 
@@ -28,6 +32,10 @@ void set_pair_right(object* obj, object* val) {
     obj->data.pair.right = val;
 }
 
+int is_empty_list(object* obj) {
+    return obj == the_empty_list;
+}
+
 /* READ */
 
 char is_ending(char c) {
@@ -42,12 +50,24 @@ int is_delimiter(char c) {
     return is_whitespace(c) || c == EOF || c == ')';
 }
 
+object* make_pair(object* left, object* right);
+
 object* make_symbol(char* value) {
     object* obj;
+    object* sym;
+
+    sym = symbol_table;
+    while (!is_empty_list(sym)) {
+        if(strcmp(get_pair_left(sym)->data.symbol.value, value) == 0) {
+            return get_pair_left(sym);
+        }
+        sym = get_pair_right(symbol_table);
+    }
 
     obj = malloc(sizeof(object));
     obj->type = SYMBOL;
     obj->data.symbol.value = strdup(value);
+    symbol_table = make_pair(obj, symbol_table); // add to the symbol table
 
     return obj;
 }
@@ -165,12 +185,12 @@ object* lookup_var_val(object* var, object* env) {
     object* vars;
     object* vals;
 
-    while (!(env == the_empty_list)) {
+    while (!is_empty_list(env)) {
         frame = get_first_frame(env);
         vars = get_frame_vars(frame);
         vals = get_frame_vals(frame);
 
-        while (!(env == the_empty_list)) {
+        while (!is_empty_list(env)) {
             if(var == get_pair_left(vars)) {
                 return  get_pair_left(vals);
             }
@@ -190,12 +210,12 @@ void set_var_val(object* var, object* val, object* env) {
     object* vars;
     object* vals;
 
-    while (!(env == the_empty_list)) {
+    while (!is_empty_list(env)) {
         frame = get_first_frame(env);
         vars = get_frame_vars(frame);
         vals = get_frame_vals(frame);
 
-        while (!(env == the_empty_list)) {
+        while (!is_empty_list(env)) {
             if(var == get_pair_left(vars)) {
                 set_pair_left(vals, val);
                 return;
@@ -220,7 +240,7 @@ void define_var(object* var, object* val, object* env) {
     vars = get_frame_vars(frame);
     vals = get_frame_vals(frame);
 
-    while (!(env == the_empty_list)) {
+    while (!is_empty_list(env)) {
         if(var == get_pair_left(vars)) {
             set_pair_left(vals, val);
             return;
@@ -292,6 +312,12 @@ int main(int argc, char** argv)
 
     the_empty_list = malloc(sizeof(object));
     the_empty_list->type = EMPTY_LIST;
+
+    // Setup symbol table
+    symbol_table = the_empty_list;
+    define_num_symbol = make_symbol("!!");
+    define_array_symbol = make_symbol("[]");
+    define_func_symbol = make_symbol("^^");
 
     /* START */
 

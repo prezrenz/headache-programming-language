@@ -111,6 +111,6 @@ argument = SYMBOL / command
     - [x] Write environment as a pair, with left pointing to a frame and right pointing to the enclosing environment. If the enclosing environment is the empty list then current environment is the global environment. A frame is a list of vars and corresponding vals, with the left having the vars and the right being a list of values.
     - [x] Implement making a frame, adding variables, extending environment, and looking up values
     - [ ] Implement defining symbols, with initial value of 0.
-        - [ ] Implement symbol table and add !! to it.
+        - [x] Implement symbol table and add !! to it.
         - [ ] Implement evaluating of symbols and !! define
     - [ ] Implement printing the value of the defined symbol
