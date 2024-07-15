@@ -10,7 +10,9 @@ typedef enum{
     ARRAY,
     SYMBOL,
     EMPTY_LIST,
-    PAIR
+    PAIR,
+    STACKPLUS,
+    STACKMIN
 } object_type;
 
 typedef struct object {
@@ -34,6 +36,10 @@ typedef struct object {
             struct object* left;
             struct object* right;
         } pair;
+
+        struct {
+            int len;
+        } stackop;
     
     } data; 
 

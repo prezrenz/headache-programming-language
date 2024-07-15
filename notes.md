@@ -119,7 +119,7 @@ argument = SYMBOL / command
     - [x] Implement printing the value of the defined symbol
 - [ ] Implement array definition
 - [ ] Implement stacking + and -
-    - [ ] Add stacking to struct and enum, with len
+    - [x] Add stacking to struct and enum, with len
     - [ ] Read + or - and error if any other symbol in string, stop on delimiter and store len
     - [ ] In eval pair, check if stacking + or - enum type, if so call set var and add len to var
     - [ ] Return lookup var val
