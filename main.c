@@ -175,12 +175,49 @@ object* read(FILE* input) {
     }
 
 #define BUFFER_MAX 1024
+#define STACKOP_MAX 255
     int i = 0;
     char buffer[BUFFER_MAX];
 
     if(c == '(') {
         return read_pair(input);
-    } else  {
+    } else if(c == '+') {
+        object* obj;
+        obj = malloc(sizeof(object));
+        obj->type = STACKPLUS;
+        obj->data.stackop.len = 0;
+
+        while (!is_delimiter(c)) {
+            if(i < STACKOP_MAX) {
+                obj->data.stackop.len += 1;
+                i++;
+            } else {
+                fprintf(stderr, "Error: too many +, max is %d\n", STACKOP_MAX);
+                exit(1);
+            }
+            c = getc(input);
+        }
+        ungetc(c, input);
+        return obj;
+    } else if(c == '-') {
+        object* obj;
+        obj = malloc(sizeof(object));
+        obj->type = STACKMIN;
+        obj->data.stackop.len = 0;
+
+        while (!is_delimiter(c)) {
+            if(i < STACKOP_MAX) {
+                obj->data.stackop.len += 1;
+                i++;
+            } else {
+                fprintf(stderr, "Error: too many -, max is %d\n", STACKOP_MAX);
+                exit(1);
+            }
+            c = getc(input);
+        }
+        ungetc(c, input);
+        return obj;
+    } else {
         // Read a symbol
         while(!is_delimiter(c)) {
 
@@ -327,6 +364,10 @@ object* eval(object* obj, object* env) {
             return obj;
         case SYMBOL:
             return lookup_var_val(obj, env);
+        case STACKPLUS:
+            return make_number(obj->data.stackop.len); // NOTE: for testing reading
+        case STACKMIN:
+            return make_number(0-(obj->data.stackop.len)); // NOTE: for testing reading
         case PAIR:
             if(is_define_number(obj)) {
                 define_var(get_pair_left(get_pair_right(obj)), make_number(0), env);
@@ -379,6 +420,7 @@ void print(object* obj) {
             break;
         case ARRAY:
             printf("%d", obj->data.array.arr[obj->data.array.curr_index]);
+            break;
         default:
             fprintf(stderr, "Error: unimplemented or unknown object type %d\n", obj->type);
             exit(1);
@@ -412,7 +454,7 @@ int main(int argc, char** argv)
 
         while (1) {
             printf("headache> ");
-            print(read(stdin));
+            print(eval(read(stdin), the_global_environment));
             printf("\n");
         }
     }
