@@ -132,7 +132,20 @@ object* make_number(char num) {
     obj->data.number.value = num;
 
     return obj;
+}
 
+object* make_array() {
+    object* obj;
+
+    obj = malloc(sizeof(object));
+    obj->type = NUMBER;
+    obj->data.array.curr_index = 0;
+
+    for(int i = 0; i < 256; i++) {
+        obj->data.array.arr[i] = 0;
+    }
+
+    return obj;
 }
 
 object* read(FILE* input);
@@ -354,8 +367,12 @@ object* setup_environment() {
 
 /* EVALUATE */
 
+int is_define_array(object* obj) {
+    return (get_pair_left(obj)->type == SYMBOL) && (get_pair_left(obj) == define_array_symbol);
+}
+
 int is_define_number(object* obj) {
-    return (get_pair_left(obj)->type == SYMBOL) && (get_pair_left(obj) == define_num_symbol); // NOTE: does this work?
+    return (get_pair_left(obj)->type == SYMBOL) && (get_pair_left(obj) == define_num_symbol);
 }
 
 object* eval(object* obj, object* env) {
@@ -371,6 +388,9 @@ object* eval(object* obj, object* env) {
         case PAIR:
             if(is_define_number(obj)) {
                 define_var(get_pair_left(get_pair_right(obj)), make_number(0), env);
+                return lookup_var_val(get_pair_left(get_pair_right(obj)), env);
+            } else if(is_define_array(obj)) {
+                define_var(get_pair_left(get_pair_right(obj)), make_array(), env);
                 return lookup_var_val(get_pair_left(get_pair_right(obj)), env);
             } else {
                 fprintf(stderr, "Eval error: unimplemented or illegal\n");
