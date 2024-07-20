@@ -38,7 +38,7 @@ typedef struct object {
         } pair;
 
         struct {
-            int len;
+            unsigned char len;
         } stackop;
     
     } data; 
@@ -201,6 +201,11 @@ object* read(FILE* input) {
         obj->data.stackop.len = 0;
 
         while (!is_delimiter(c)) {
+            if(c != '+') {
+                fprintf(stderr, "Error: expected '+' but got '%c' instead\n", c);
+                exit(1);
+            }
+
             if(i < STACKOP_MAX) {
                 obj->data.stackop.len += 1;
                 i++;
@@ -219,6 +224,11 @@ object* read(FILE* input) {
         obj->data.stackop.len = 0;
 
         while (!is_delimiter(c)) {
+            if(c != '-') {
+                fprintf(stderr, "Error: expected '-' but got '%c' instead\n", c);
+                exit(1);
+            }
+
             if(i < STACKOP_MAX) {
                 obj->data.stackop.len += 1;
                 i++;
@@ -371,8 +381,28 @@ int is_define_array(object* obj) {
     return (get_pair_left(obj)->type == SYMBOL) && (get_pair_left(obj) == define_array_symbol);
 }
 
+int is_stack_plus(object* obj) {
+    return (get_pair_left(obj)->type == STACKPLUS);
+}
+
+int is_stack_min(object* obj) {
+    return (get_pair_left(obj)->type == STACKMIN);
+}
+
 int is_define_number(object* obj) {
     return (get_pair_left(obj)->type == SYMBOL) && (get_pair_left(obj) == define_num_symbol);
+}
+
+object* add_number_objects(object* x, object* y) {
+    unsigned char xval = x->data.number.value;
+    unsigned char yval = y->data.number.value;
+    return make_number(xval + yval);
+}
+
+object* sub_number_objects(object* x, object* y) {
+    unsigned char xval = x->data.number.value;
+    unsigned char yval = y->data.number.value;
+    return make_number(xval - yval);
 }
 
 object* eval(object* obj, object* env) {
@@ -384,20 +414,32 @@ object* eval(object* obj, object* env) {
         case STACKPLUS:
             return make_number(obj->data.stackop.len); // NOTE: for testing reading
         case STACKMIN:
-            return make_number(0-(obj->data.stackop.len)); // NOTE: for testing reading
+            return make_number(obj->data.stackop.len); // NOTE: for testing reading
         case PAIR:
+            // TODO: refactor, this is becoming too confusing
+            //       embrace C, make shorter names
             if(is_define_number(obj)) {
                 define_var(get_pair_left(get_pair_right(obj)), make_number(0), env);
                 return lookup_var_val(get_pair_left(get_pair_right(obj)), env);
             } else if(is_define_array(obj)) {
                 define_var(get_pair_left(get_pair_right(obj)), make_array(), env);
                 return lookup_var_val(get_pair_left(get_pair_right(obj)), env);
+            } else if(is_stack_plus(obj)) {
+                object* new_val = add_number_objects(lookup_var_val(get_pair_left(get_pair_right(obj)), env),
+                                                    get_pair_left(obj));
+                set_var_val(get_pair_left(get_pair_right(obj)), new_val, env);     
+                return lookup_var_val(get_pair_left(get_pair_right(obj)), env);
+            } else if(is_stack_min(obj)) {
+                object* new_val = sub_number_objects(lookup_var_val(get_pair_left(get_pair_right(obj)), env),
+                                                    get_pair_left(obj));
+                set_var_val(get_pair_left(get_pair_right(obj)), new_val, env);     
+                return lookup_var_val(get_pair_left(get_pair_right(obj)), env);
             } else {
                 fprintf(stderr, "Eval error: unimplemented or illegal\n");
                 exit(1); // TODO: parse compound procedures
             }
         default:
-            fprintf(stderr, "Eval Error: unimplemented or illegal\n");
+            fprintf(stderr, "Eval Error: unimplemented or illegal type %d\n", obj->type);
             exit(1);
     }
 }
