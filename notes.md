@@ -125,6 +125,7 @@ argument = SYMBOL / command
     - [x] In eval pair, check if stacking + or - enum type, if so call set var and add len to var
     - [x] Return lookup var val
     - [ ] Validate if objects operated on are numbers
-- [ ] Implement ?? if command
-    - [ ] Implement checking if symbol is 0 or 1
+    - What happens if you define + or - as symbols?
+- [x] Implement ?? if command
+    - [x] Implement checking if symbol is 0 or 1
 

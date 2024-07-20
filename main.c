@@ -4,6 +4,8 @@
 
 /* STRUCTS */
 
+#define MAX_ARRAY 256
+
 typedef enum{
     NUMBER,
     COMP_PROC,
@@ -20,12 +22,12 @@ typedef struct object {
     
     union {
         struct {
-            unsigned char value;
+            int value;
         } number;
         
         struct  {
             int curr_index;
-            unsigned char arr[256];
+            int arr[MAX_ARRAY];
         } array;
 
         struct {
@@ -38,7 +40,7 @@ typedef struct object {
         } pair;
 
         struct {
-            unsigned char len;
+            int len;
         } stackop;
     
     } data; 
@@ -125,7 +127,7 @@ object* make_pair(object* left, object* right) {
     return obj;
 }
 
-object* make_number(char num) {
+object* make_number(int num) {
     object* obj;
 
     obj = malloc(sizeof(object));
@@ -142,7 +144,7 @@ object* make_array() {
     obj->type = NUMBER;
     obj->data.array.curr_index = 0;
 
-    for(int i = 0; i < 256; i++) {
+    for(int i = 0; i < MAX_ARRAY; i++) {
         obj->data.array.arr[i] = 0;
     }
 
@@ -398,8 +400,24 @@ int is_if(object* obj) {
     return (get_pair_left(obj)->type == SYMBOL) && (get_pair_left(obj) == if_symbol);
 }
 
+int is_true(object* obj) {
+    return obj->data.number.value > 0;
+}
+
 object* get_predicate(object* obj) {
     return get_pair_left(get_pair_right(obj));
+}
+
+object* if_consequent(object* obj) {
+    return get_pair_left(get_pair_right(get_pair_right(obj)));
+}
+
+object* if_alternative(object* obj) {
+    if(is_empty_list(get_pair_right(get_pair_right(get_pair_right(obj))))) {
+        return make_number(-1);
+    } else {
+        return get_pair_left(get_pair_right(get_pair_right(get_pair_right(obj))));
+    }
 }
 
 object* add_number_objects(object* x, object* y) {
@@ -415,6 +433,7 @@ object* sub_number_objects(object* x, object* y) {
 }
 
 object* eval(object* obj, object* env) {
+tailcall:
     switch (obj->type) {
         case EMPTY_LIST:
             return obj;
@@ -444,12 +463,10 @@ object* eval(object* obj, object* env) {
                 set_var_val(get_pair_left(get_pair_right(obj)), new_val, env);     
                 return lookup_var_val(get_pair_left(get_pair_right(obj)), env);
             } else if(is_if(obj)) {
-                object* expe = lookup_var_val(get_predicate(obj), env);
-                if(expe->data.number.value > 0) {
-                    return make_number((char)256);
-                } else {
-                    return make_number((char)128);
-                }
+                obj = is_true(lookup_var_val(get_predicate(obj), env)) ?
+                        if_consequent(obj) :
+                        if_alternative(obj);
+                goto tailcall;
             } else {
                 fprintf(stderr, "Eval error: unimplemented or illegal\n");
                 exit(1); // TODO: parse compound procedures
