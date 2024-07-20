@@ -107,6 +107,7 @@ argument = SYMBOL / command
     - [ ] entering ) enters an endless loop
     - [ ] entering ( followed by anything else constantly asks for input
     - [ ] entering (sym)bol will leave bol in buffer (optional)
+    - [ ] exiting with <C-c> gives error variable undefined error
 - [x] Implement environment
     - [x] Read Section 3.2 of SICP
     - [x] Read Section 4.1.3 of SICP
@@ -120,10 +121,10 @@ argument = SYMBOL / command
 - [ ] Implement array definition
 - [ ] Implement stacking + and -
     - [x] Add stacking to struct and enum, with len
-    - [ ] Read + or - and error if any other symbol in string, stop on delimiter and store len
-    - [ ] In eval pair, check if stacking + or - enum type, if so call set var and add len to var
-    - [ ] Return lookup var val
-    - [ ] Write more tasks
+    - [x] Read + or - and error if any other symbol in string, stop on delimiter and store len
+    - [x] In eval pair, check if stacking + or - enum type, if so call set var and add len to var
+    - [x] Return lookup var val
+    - [ ] Validate if objects operated on are numbers
 - [ ] Implement ?? if command
     - [ ] Implement checking if symbol is 0 or 1
 
