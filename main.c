@@ -54,6 +54,7 @@ object* symbol_table;
 object* define_num_symbol;
 object* define_array_symbol;
 object* define_func_symbol;
+object* if_symbol;
 
 /* HELPERS */
 
@@ -377,10 +378,6 @@ object* setup_environment() {
 
 /* EVALUATE */
 
-int is_define_array(object* obj) {
-    return (get_pair_left(obj)->type == SYMBOL) && (get_pair_left(obj) == define_array_symbol);
-}
-
 int is_stack_plus(object* obj) {
     return (get_pair_left(obj)->type == STACKPLUS);
 }
@@ -389,8 +386,20 @@ int is_stack_min(object* obj) {
     return (get_pair_left(obj)->type == STACKMIN);
 }
 
+int is_define_array(object* obj) {
+    return (get_pair_left(obj)->type == SYMBOL) && (get_pair_left(obj) == define_array_symbol);
+}
+
 int is_define_number(object* obj) {
     return (get_pair_left(obj)->type == SYMBOL) && (get_pair_left(obj) == define_num_symbol);
+}
+
+int is_if(object* obj) {
+    return (get_pair_left(obj)->type == SYMBOL) && (get_pair_left(obj) == if_symbol);
+}
+
+object* get_predicate(object* obj) {
+    return get_pair_left(get_pair_right(obj));
 }
 
 object* add_number_objects(object* x, object* y) {
@@ -434,6 +443,13 @@ object* eval(object* obj, object* env) {
                                                     get_pair_left(obj));
                 set_var_val(get_pair_left(get_pair_right(obj)), new_val, env);     
                 return lookup_var_val(get_pair_left(get_pair_right(obj)), env);
+            } else if(is_if(obj)) {
+                object* expe = lookup_var_val(get_predicate(obj), env);
+                if(expe->data.number.value > 0) {
+                    return make_number((char)256);
+                } else {
+                    return make_number((char)128);
+                }
             } else {
                 fprintf(stderr, "Eval error: unimplemented or illegal\n");
                 exit(1); // TODO: parse compound procedures
@@ -502,7 +518,8 @@ int main(int argc, char** argv)
     symbol_table = the_empty_list;
     define_num_symbol = make_symbol("!!");
     define_array_symbol = make_symbol("[]"); 
-    define_func_symbol = make_symbol("^^"); 
+    define_func_symbol = make_symbol("^^");
+    if_symbol = make_symbol("??");
 
     // Setup environment
     the_empty_environment = the_empty_list;

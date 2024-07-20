@@ -118,7 +118,7 @@ argument = SYMBOL / command
         - [x] Implement symbol table and add !! to it.
         - [x] Implement evaluating of symbols and !! define
     - [x] Implement printing the value of the defined symbol
-- [ ] Implement array definition
+- [x] Implement array definition
 - [ ] Implement stacking + and -
     - [x] Add stacking to struct and enum, with len
     - [x] Read + or - and error if any other symbol in string, stop on delimiter and store len
