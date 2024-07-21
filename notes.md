@@ -4,21 +4,7 @@ A purely symbolic, no keywords, lisp like language.
 
 All commands start and end in parens. It follows the pattern (operator (operand)+). Operator is a statement, operand is an expression.
 
-(!! Symbol *(command)+) Defines a symbol and inits it with value 0. If there's a lambda, this defines a function that calls the command. Also assigns value.
-
-(^^ ((arg)*) ((command)*)) Lambda, returns a function object.
-
-(+ Symbol) Binary increments the value in the symbol. If it's a function, throws an error. Stacks endlessly to increment a lot in just 1 command.
-
-(- Symbol) Binary decrements. Decrementing from 0 will loop back to highest possible number. Stacks same as above.
-
 (Symbol symbol) Assigns the value of symbol to symbol, or if it's a function, will assign the lambda of the function. If there's no return value, it throws error.
-
-(>? Symbol symbol2 (command)+) Will compare symbol with symbol2, if symbol is greater than symbol2.
-
-(<? Symbol symbol2 (command)+) Same as above but for less than.
-
-(=? Symbol symbol2 (command)+) Same as above but will check if equals.
 
 (// Symbol symbol2) Divides symbol by symbol2 and returns the value. Throws error if one is function.
 
@@ -34,35 +20,14 @@ All commands start and end in parens. It follows the pattern (operator (operand)
 
 (@@ Symbol) Writes the binary value of Symbol into output as an ascii character.
 
-## OPTIONAL
-
-(!! Symbol []) Defines a symbol that contains a dynamic array. Symbol will return the value of the first value in array, which is 0 upon definition.
-
-(+ Array) Moves the array pointer to the right by one. Stacks. Arrays have a max value of 255.
-
-(- Array) Same as above but moves left. Loops back to pointing to 255 if going below 0.
-
-(Array Symbol) Stores the value inside symbol into Array. If function, will store the return value.
-
 ## Data Types
-  - uint8
+  - int
   - function
-  - uint8 array[256]
-
-### Symbol Struct
-  - Union uint8, uint8 array[256], array of pointers
-
-### Op Struct
-  - String Op
-  - int OpNum
-  - array of Op Struct
+  - int array[256]
 
 ## Expressions
   - Symbol - evaluates to the value inside, if it's a function will return return value if it's array will return the value at head
   - Function -
-
-## Code Structure
-  - Scanner: make tokens, like with Statement Lang
 
 ## Grammar
 
@@ -80,7 +45,7 @@ procedure = SYMBOL
 argument = SYMBOL / command
 
 ## Features
-- Everything is a symbol.
+- Everything is a symbol. Nearly everything has a return value.
 - Symbols contain different datas and are declared differently each.
     - ([] SYMBOL) declares a symbol with the type array. The whole array has an initial value of 0.
     - (^^ SYMBOL (<params>) <body>) declares a symbol with the type function, with a list of params followed by a list of commands.
@@ -88,10 +53,13 @@ argument = SYMBOL / command
     - Evaluating these commands will return a number at the end, either 0 on success or 1 on fail.
 - Commands are represented as lists. Lists are made as pairs with left and right, with left containing the data and right pointing to the next item on the list.
 - Entering a symbol will look for that symbol and print its value. If its an array, the whole array is printed with its values and index and current index. If it's a number, it will print the number. If it's a procedure, it will print either <primitive proc> or <compound proc>
-- You can use your entire keyboard to name symbols.
+- You can use almost any character for symbols.
 - Only 0 is false, any none 0 value is true.
 - The 4 checks return 0 or 1 for true or false.
 - The (?? <cond> <if> <else>) will evaluate if cond is 0 or 1 and execute <if> if 1 and <else> if 0.
+- The (>? <SYMBOL> <SYMBOL>), (>? <SYMBOL> <SYMBOL>), and (=? <SYMBOL> <SYMBOL>) compares if the two symbols are greater than, less than, or equal respectively and return 1 or 0 depending on the result.
+- The (%% <SYMBOL>) will take a single character input and store its value inside the symbol as its ascii representation. If it's an array, it is stored in the current pointed index.
+- (] <SYMBOL>) and ([ <SYMBOL>) moves the pointer in an array that SYMBOL refers to right and left respectively, and also stacks. If the index turns to less than 0, it goes to 0, if it goes to more than MAX_ARRAY, it goes back to MAX_ARRAY.
 
 ### Tasks
 - [x] Read input as list.
@@ -128,4 +96,8 @@ argument = SYMBOL / command
     - What happens if you define + or - as symbols?
 - [x] Implement ?? if command
     - [x] Implement checking if symbol is 0 or 1
-
+- [ ] Implement conditionals
+    - [ ] Implement >?
+    - [ ] Implement <?
+    - [ ] Implement =?
+- [ ] Implement array pointer movement left and right
