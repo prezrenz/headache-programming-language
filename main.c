@@ -57,6 +57,9 @@ object* define_num_symbol;
 object* define_array_symbol;
 object* define_func_symbol;
 object* if_symbol;
+object* less_symbol;
+object* great_symbol;
+object* equal_symbol;
 
 /* HELPERS */
 
@@ -420,6 +423,27 @@ object* if_alternative(object* obj) {
     }
 }
 
+
+int is_cond_great(object* obj) {
+    return (get_pair_left(obj)->type == SYMBOL) && (get_pair_left(obj) == great_symbol);
+}
+
+int is_cond_less(object* obj) {
+    return (get_pair_left(obj)->type == SYMBOL) && (get_pair_left(obj) == less_symbol);
+}
+
+int is_cond_equal(object* obj) {
+    return (get_pair_left(obj)->type == SYMBOL) && (get_pair_left(obj) == equal_symbol);
+}
+
+object* cond_first_sym(object* obj) {
+    return get_pair_left(get_pair_right(obj));
+}
+
+object* cond_second_sym(object* obj) {
+    return get_pair_left(get_pair_right(get_pair_right(obj)));
+}
+
 object* add_number_objects(object* x, object* y) {
     unsigned char xval = x->data.number.value;
     unsigned char yval = y->data.number.value;
@@ -431,6 +455,8 @@ object* sub_number_objects(object* x, object* y) {
     unsigned char yval = y->data.number.value;
     return make_number(xval - yval);
 }
+
+#define COMPARE(sym1, sym2, op) (sym1->data.number.value op sym2->data.number.value)
 
 object* eval(object* obj, object* env) {
 tailcall:
@@ -446,27 +472,39 @@ tailcall:
         case PAIR:
             // TODO: refactor, this is becoming too confusing
             //       embrace C, make shorter names
-            if(is_define_number(obj)) {
+            if(is_define_number(obj)) { // DEFINE NUMBER
                 define_var(get_pair_left(get_pair_right(obj)), make_number(0), env);
                 return lookup_var_val(get_pair_left(get_pair_right(obj)), env);
-            } else if(is_define_array(obj)) {
+            } else if(is_define_array(obj)) { // DEFINE ARRAY
                 define_var(get_pair_left(get_pair_right(obj)), make_array(), env);
                 return lookup_var_val(get_pair_left(get_pair_right(obj)), env);
-            } else if(is_stack_plus(obj)) {
+            } else if(is_stack_plus(obj)) { // STACKING PLUS
                 object* new_val = add_number_objects(lookup_var_val(get_pair_left(get_pair_right(obj)), env),
                                                     get_pair_left(obj));
                 set_var_val(get_pair_left(get_pair_right(obj)), new_val, env);     
                 return lookup_var_val(get_pair_left(get_pair_right(obj)), env);
-            } else if(is_stack_min(obj)) {
+            } else if(is_stack_min(obj)) { // STACKING MINUS
                 object* new_val = sub_number_objects(lookup_var_val(get_pair_left(get_pair_right(obj)), env),
                                                     get_pair_left(obj));
                 set_var_val(get_pair_left(get_pair_right(obj)), new_val, env);     
                 return lookup_var_val(get_pair_left(get_pair_right(obj)), env);
-            } else if(is_if(obj)) {
-                obj = is_true(lookup_var_val(get_predicate(obj), env)) ?
+            } else if(is_if(obj)) { // IF
+                obj = is_true(eval(get_predicate(obj), env)) ?
                         if_consequent(obj) :
                         if_alternative(obj);
                 goto tailcall;
+            } else if(is_cond_great(obj)) {
+                object* sym1 = lookup_var_val(cond_first_sym(obj), env);
+                object* sym2 = lookup_var_val(cond_second_sym(obj), env);
+                return make_number(COMPARE(sym1, sym2, >));
+            } else if(is_cond_less(obj)) {
+                object* sym1 = lookup_var_val(cond_first_sym(obj), env);
+                object* sym2 = lookup_var_val(cond_second_sym(obj), env);
+                return make_number(COMPARE(sym1, sym2, <));
+            } else if(is_cond_equal(obj)) {
+                object* sym1 = lookup_var_val(cond_first_sym(obj), env);
+                object* sym2 = lookup_var_val(cond_second_sym(obj), env);
+                return make_number(COMPARE(sym1, sym2, ==)); 
             } else {
                 fprintf(stderr, "Eval error: unimplemented or illegal\n");
                 exit(1); // TODO: parse compound procedures
@@ -536,7 +574,11 @@ int main(int argc, char** argv)
     define_num_symbol = make_symbol("!!");
     define_array_symbol = make_symbol("[]"); 
     define_func_symbol = make_symbol("^^");
+
     if_symbol = make_symbol("??");
+    less_symbol = make_symbol("<?");
+    great_symbol = make_symbol(">?");
+    equal_symbol = make_symbol("=?");
 
     // Setup environment
     the_empty_environment = the_empty_list;
