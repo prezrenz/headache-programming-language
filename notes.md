@@ -100,4 +100,6 @@ argument = SYMBOL / command
     - [ ] Implement >?
     - [ ] Implement <?
     - [ ] Implement =?
-- [ ] Implement array pointer movement left and right
+- [-] Implement array pointer movement left and right
+    - [ ] Remove arrays
+- [ ] Refactor and split out all code
