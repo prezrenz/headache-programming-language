@@ -1,0 +1,90 @@
+#include "commons.h"
+
+object* the_empty_list; // Essentially just a null to end lists
+object* the_empty_environment;
+object* the_global_environment;
+object* symbol_table;
+object* define_num_symbol;
+object* define_array_symbol;
+object* define_func_symbol;
+object* if_symbol;
+object* less_symbol;
+object* great_symbol;
+object* equal_symbol;
+
+object* gpl(object* obj) { // Get Pair Left
+    return obj->data.pair.left;
+}
+
+object* gpr(object* obj) { // Get Pair Right
+    return obj->data.pair.right;
+}
+
+void spl(object* obj, object* val) { // Set Pair Left
+    obj->data.pair.left = val;
+}
+
+void spr(object* obj, object* val) { // Set Pair Right
+    obj->data.pair.right = val;
+}
+
+int is_empty_list(object* obj) {
+    return obj == the_empty_list;
+}
+
+int main(int argc, char** argv)
+{
+    FILE* program;
+
+    /* INITIALIZATION */
+
+    the_empty_list = malloc(sizeof(object));
+    the_empty_list->type = EMPTY_LIST;
+
+    // Setup symbol table
+    symbol_table = the_empty_list;
+    define_num_symbol = make_symbol("!!");
+    define_array_symbol = make_symbol("[]"); 
+    define_func_symbol = make_symbol("^^");
+
+    if_symbol = make_symbol("??");
+    less_symbol = make_symbol("<?");
+    great_symbol = make_symbol(">?");
+    equal_symbol = make_symbol("=?");
+
+    // Setup environment
+    the_empty_environment = the_empty_list;
+    the_global_environment = setup_environment();
+
+    /* START */
+
+    if(argc == 1) {
+        puts("Headache REPL\n");
+        puts("Press Ctrl+C to Exit\n");
+
+        while (1) {
+            printf("headache> ");
+            print(eval(read(stdin), the_global_environment));
+            printf("\n");
+        }
+    }
+    else if(argc > 2)
+    {
+        fprintf(stderr, "Usage: headache (program)\n\tOmit program to enter REPL");
+        return 1;
+    }
+    else if((program = fopen(argv[1], "r")) == NULL) {
+        fprintf(stderr, "Error: Failed to open file %s", argv[1]);
+        return 2;
+    }
+    else {
+        // Start of program
+        while (!feof(program)) {
+            print(eval(read(program), the_global_environment));
+            printf("\n");
+        }
+        printf("\n\nSuccessfully executed file");
+    }
+
+    return 0;
+}

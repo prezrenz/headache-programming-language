@@ -102,4 +102,5 @@ argument = SYMBOL / command
     - [ ] Implement =?
 - [-] Implement array pointer movement left and right
     - [ ] Remove arrays
-- [ ] Refactor and split out all code
+- [x] Refactor and split out all code
+- [ ] Refactor eval function to recursive
