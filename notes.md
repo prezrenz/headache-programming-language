@@ -96,11 +96,11 @@ argument = SYMBOL / command
     - What happens if you define + or - as symbols?
 - [x] Implement ?? if command
     - [x] Implement checking if symbol is 0 or 1
-- [ ] Implement conditionals
-    - [ ] Implement >?
-    - [ ] Implement <?
-    - [ ] Implement =?
+- [x] Implement conditionals
+    - [x] Implement >?
+    - [x] Implement <?
+    - [x] Implement =?
 - [-] Implement array pointer movement left and right
-    - [ ] Remove arrays
+    - [x] Remove arrays
 - [x] Refactor and split out all code
 - [ ] Refactor eval function to recursive

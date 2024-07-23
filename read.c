@@ -53,20 +53,6 @@ object* make_number(int num) {
     return obj;
 }
 
-object* make_array() {
-    object* obj;
-
-    obj = malloc(sizeof(object));
-    obj->type = NUMBER;
-    obj->data.array.curr_index = 0;
-
-    for(int i = 0; i < MAX_ARRAY; i++) {
-        obj->data.array.arr[i] = 0;
-    }
-
-    return obj;
-}
-
 object* read_pair(FILE* input) {
     char c;
     object* left;

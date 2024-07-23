@@ -12,7 +12,6 @@
 typedef enum{
     NUMBER,
     COMP_PROC,
-    ARRAY,
     SYMBOL,
     EMPTY_LIST,
     PAIR,
@@ -28,11 +27,6 @@ typedef struct object {
             int value;
         } number;
         
-        struct  {
-            int curr_index;
-            int arr[MAX_ARRAY];
-        } array;
-
         struct {
             char* value;
         } symbol;
@@ -82,7 +76,6 @@ int is_delimiter(char c);
 object* make_pair(object* left, object* right);
 object* make_symbol(char* value);
 object* make_number(int num);
-object* make_array();
 
 object* read(FILE* input);
 object* read_pair(FILE* input);

@@ -8,10 +8,6 @@ int is_stack_min(object* obj) {
     return (gpl(obj)->type == STACKMIN);
 }
 
-int is_define_array(object* obj) {
-    return (gpl(obj)->type == SYMBOL) && (gpl(obj) == define_array_symbol);
-}
-
 int is_define_number(object* obj) {
     return (gpl(obj)->type == SYMBOL) && (gpl(obj) == define_num_symbol);
 }
@@ -91,9 +87,6 @@ tailcall:
             //       embrace C, make shorter names
             if(is_define_number(obj)) { // DEFINE NUMBER
                 define_var(gpl(gpr(obj)), make_number(0), env);
-                return lookup_var_val(gpl(gpr(obj)), env);
-            } else if(is_define_array(obj)) { // DEFINE ARRAY
-                define_var(gpl(gpr(obj)), make_array(), env);
                 return lookup_var_val(gpl(gpr(obj)), env);
             } else if(is_stack_plus(obj)) { // STACKING PLUS
                 object* new_val = add_number_objects(lookup_var_val(gpl(gpr(obj)), env),

@@ -32,9 +32,6 @@ void print(object* obj) {
         case NUMBER:
             printf("%d", obj->data.number.value);
             break;
-        case ARRAY:
-            printf("%d", obj->data.array.arr[obj->data.array.curr_index]);
-            break;
         default:
             fprintf(stderr, "Error: unimplemented or unknown object type %d\n", obj->type);
             exit(1);
