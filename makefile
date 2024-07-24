@@ -9,7 +9,7 @@ headache:
 	$(CC) $(SOURCES) $(CFLAGS) -o headache.exe
 	
 run:
-	headache.exe sample.txt
+	headache.exe test.ache
 
 clean:
 	del headache.exe

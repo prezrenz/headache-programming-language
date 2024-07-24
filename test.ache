@@ -1,2 +1,17 @@
-(!! var)
-var
+(!! 1)
+(+ 1)
+1
+(!! true)
+(!! false)
+(+ true)
+true
+false
+(!! 2)
+(!! 3)
+(++ 2)
+(+++ 3)
+(?? true 2 3)
+(?? false 2 3)
+(?? (=? 1 true) 1 2)
+(?? (>? 1 2) true false)
+(?? (<? 1 2) true false)
