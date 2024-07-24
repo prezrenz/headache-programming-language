@@ -1,4 +1,5 @@
 #include "commons.h"
+#include <stdio.h>
 
 object* the_empty_list; // Essentially just a null to end lists
 object* the_empty_environment;
@@ -68,8 +69,7 @@ int main(int argc, char** argv)
             printf("\n");
         }
     }
-    else if(argc > 2)
-    {
+    else if(argc > 2) {
         fprintf(stderr, "Usage: headache (program)\n\tOmit program to enter REPL");
         return 1;
     }
@@ -78,6 +78,14 @@ int main(int argc, char** argv)
         return 2;
     }
     else {
+        char* ext = strchr(argv[1], '.');
+        if(ext != NULL) {
+            if(strcmp(ext, ".ache") != 0) {
+                fprintf(stderr, "expected a .ache program file");
+                exit(1);
+            }
+        }
+
         // Start of program
         while (!feof(program)) {
             print(eval(read(program), the_global_environment));
