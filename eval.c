@@ -119,7 +119,24 @@ object* cond_second_sym(object* obj) {
 
 #define COMPARE(sym1, sym2, op) (sym1->data.number.value op sym2->data.number.value)
 
+int is_application(object* obj) {
+    return obj->type == PAIR;
+}
+
+
+object* list_of_vals(object* obj, object* env) {
+    if(is_empty_list(obj)) {
+        return the_empty_list;
+    } else {
+        return make_pair(eval(gpl(obj), env),
+                            list_of_vals(gpr(obj), env));
+    }
+}
+
 object* eval(object* obj, object* env) {
+    object* proc;
+    object* args;
+
 tailcall:
     if(is_empty_list(obj)) {
         return obj;
@@ -147,7 +164,11 @@ tailcall:
     } else if(is_cond_equal(obj)) {
         object* sym1 = lookup_var_val(cond_first_sym(obj), env);
         object* sym2 = lookup_var_val(cond_second_sym(obj), env);
-        return make_number(COMPARE(sym1, sym2, ==)); 
+        return make_number(COMPARE(sym1, sym2, ==));
+    } else if(is_application(obj)) { // NOTE: needs to be checked AFTER others
+        proc = eval(gpl(obj), env); // Gets the operator
+        args = list_of_vals(gpr(obj), env); // Gets operands
+        return (proc->data.primitive_proc.proc)(args);
     } else {
         fprintf(stderr, "Eval error: unimplemented or illegal type %d\n", obj->type);
         exit(1);

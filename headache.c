@@ -57,6 +57,10 @@ int main(int argc, char** argv)
     the_empty_environment = the_empty_list;
     the_global_environment = setup_environment();
 
+    define_var(make_symbol("@+"),
+                make_primitive_proc(add_proc),
+                the_global_environment);
+
     /* START */
 
     if(argc == 1) {

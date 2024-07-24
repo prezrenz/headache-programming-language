@@ -1,7 +1,7 @@
 CC = cc
 CFLAGS = -std=c99 -Wall -Wextra -g -I.
 
-SOURCES = headache.c read.c env.c eval.c prnt.c
+SOURCES = headache.c read.c env.c eval.c prnt.c procs.c
  
 all: headache run
 

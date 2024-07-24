@@ -16,7 +16,8 @@ typedef enum{
     EMPTY_LIST,
     PAIR,
     STACKPLUS,
-    STACKMIN
+    STACKMIN,
+    PRIMITIVE_PROC
 } object_type;
 
 typedef struct object {
@@ -39,6 +40,10 @@ typedef struct object {
         struct {
             int len;
         } stackop;
+
+        struct {
+            struct object* (*proc)(struct object* args);
+        } primitive_proc;
     
     } data; 
 
@@ -98,6 +103,11 @@ void set_var_val(object* var, object* val, object* env);
 void define_var(object* var, object* val, object* env);
 
 object* setup_environment();
+
+/* PRIMITIVE PROCEDURES*/
+
+object* make_primitive_proc(object* (*proc)(object* args));
+object* add_proc(object* args);
 
 /* EVALUATING */
 
