@@ -101,11 +101,24 @@ object* setup_environment();
 
 /* EVALUATING */
 
+int is_symbol(object* obj);
+
+int is_define_number(object* obj);
+
+object* get_def_var(object* obj);
+
+object* eval_define_number(object* obj, object* env);
+
 int is_stack_plus(object* obj);
 int is_stack_min(object* obj);
 
-int is_define_array(object* obj);
-int is_define_number(object* obj);
+object* add_number_objects(object* x, object* y);
+object* sub_number_objects(object* x, object* y);
+
+object* get_stacking_symbol(object* obj);
+
+object* eval_stack_plus(object* obj, object* env);
+object* eval_stack_min(object* obj, object* env);
 
 int is_if(object* obj);
 int is_true(object* obj);
@@ -120,9 +133,6 @@ int is_cond_equal(object* obj);
 
 object* cond_first_sym(object* obj);
 object* cond_second_sym(object* obj);
-
-object* add_number_objects(object* x, object* y);
-object* sub_number_objects(object* x, object* y);
 
 #define COMPARE(sym1, sym2, op) (sym1->data.number.value op sym2->data.number.value)
 
