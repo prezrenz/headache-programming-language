@@ -47,7 +47,7 @@ argument = SYMBOL / command
 ## Features
 - Everything is a symbol. Nearly everything has a return value.
 - Symbols contain different datas and are declared differently each.
-    - ([] SYMBOL) declares a symbol with the type array. The whole array has an initial value of 0.
+    - ([] <SYMBOL NAME> <SYMBOL LEFT> <SYMBOL RIGHT>) declares a PAIR with the name SYMBOL NAME and points to a declared symbol in the environment with name SYMBOL LEFT and name SYMBOL RIGHT.
     - (^^ SYMBOL (<params>) <body>) declares a symbol with the type function, with a list of params followed by a list of commands.
     - (!! SYMBOL) declares a symbol with the type number. Its initial value is 0.
     - Evaluating these commands will return a number at the end, either 0 on success or 1 on fail.
@@ -59,7 +59,8 @@ argument = SYMBOL / command
 - The (?? <cond> <if> <else>) will evaluate if cond is 0 or 1 and execute <if> if 1 and <else> if 0.
 - The (>? <SYMBOL> <SYMBOL>), (>? <SYMBOL> <SYMBOL>), and (=? <SYMBOL> <SYMBOL>) compares if the two symbols are greater than, less than, or equal respectively and return 1 or 0 depending on the result.
 - The (%% <SYMBOL>) will take a single character input and store its value inside the symbol as its ascii representation. If it's an array, it is stored in the current pointed index.
-- (] <SYMBOL>) and ([ <SYMBOL>) moves the pointer in an array that SYMBOL refers to right and left respectively, and also stacks. If the index turns to less than 0, it goes to 0, if it goes to more than MAX_ARRAY, it goes back to MAX_ARRAY.
+- The (]] <PAIR SYMBOL>) return the left symbol pointed by left of pair.
+- The ([[ <PAIR SYMBOL>) return the right symbol pointed by right of pair.
 
 ### Tasks
 - [x] Read input as list.
