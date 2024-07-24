@@ -104,7 +104,12 @@ argument = SYMBOL / command
     - [x] Remove arrays
 - [x] Refactor and split out all code
 - [x] Refactor eval function
-- [ ] Convert !! define to accomodate any data type, if 3rd arg is empty defaults to num
+- [x] Convert !! define to accomodate any data type, if 3rd arg is empty defaults to num
+- [ ] Implement primitive functions
+    - [ ] Implement @+ addition
+    - [ ] Implement @- subtraction
+    - [ ] Implement // division
+    - [ ] Implement ** multiplication
 - [ ] Implement pairs
     - [ ] Implement [] making pairs
     - [ ] Implement ]] getting pair right
@@ -112,11 +117,6 @@ argument = SYMBOL / command
     - [ ] Implement @[ set pair left
     - [ ] Implement @] set pair right
     - [ ] Implement [[]] list
-- [ ] Implement primitive functions
-    - [ ] Implement @+ addition
-    - [ ] Implement @- subtraction
-    - [ ] Implement // division
-    - [ ] Implement ** multiplication
 - [ ] Implement I/O
     - [ ] Implement %% printing
         - [ ] Implement printing lists

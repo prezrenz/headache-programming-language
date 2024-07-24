@@ -12,8 +12,22 @@ object* get_def_var(object* obj) {
     return gpl(gpr(obj));
 }
 
+object* get_def_val(object* obj, object* env) {
+    if(is_empty_list(gpr(gpr(obj)))) {
+        return the_empty_list;
+    }
+
+    return eval(gpl(gpr(gpr(obj))), env);
+}
+
 object* eval_define_number(object* obj, object* env) {
-    define_var(get_def_var(obj), make_number(0), env);
+    object* val = get_def_val(obj, env);
+
+    if(is_empty_list(val)) {
+        val = make_number(0);
+    }
+
+    define_var(get_def_var(obj), val, env);
     return lookup_var_val(gpl(gpr(obj)), env);
 }
 

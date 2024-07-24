@@ -106,6 +106,7 @@ int is_symbol(object* obj);
 int is_define_number(object* obj);
 
 object* get_def_var(object* obj);
+object* get_def_val(object* obj, object* env);
 
 object* eval_define_number(object* obj, object* env);
 
