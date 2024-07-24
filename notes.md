@@ -20,21 +20,12 @@ All commands start and end in parens. It follows the pattern (operator (operand)
 
 (@@ Symbol) Writes the binary value of Symbol into output as an ascii character.
 
-## Data Types
-  - int
-  - function
-  - int array[256]
-
-## Expressions
-  - Symbol - evaluates to the value inside, if it's a function will return return value if it's array will return the value at head
-  - Function -
-
 ## Grammar
 
 operation = "(" operator (operand)*)
-operator = "!!" / "@@" / ("+")* / ("-")* / ">?" / "<?" / "=?" / "@-" / "@+" / "//" / "**" / "%%" / "<<" / "^^" / symbol
+operator = "[[" / "]]" / "[]" / "!!" / "@@" / ("+")* / ("-")* / ">?" / "<?" / "=?" / "@-" / "@+" / "//" / "**" / "%%" / "<<" / "^^" / symbol
 operand = symbol / operation
-symbol = uint8 / function / uint8 array[256]
+symbol = NUMBER / FUNCTION / PAIR
 
 ## Grammar
 
@@ -58,9 +49,17 @@ argument = SYMBOL / command
 - The 4 checks return 0 or 1 for true or false.
 - The (?? <cond> <if> <else>) will evaluate if cond is 0 or 1 and execute <if> if 1 and <else> if 0.
 - The (>? <SYMBOL> <SYMBOL>), (>? <SYMBOL> <SYMBOL>), and (=? <SYMBOL> <SYMBOL>) compares if the two symbols are greater than, less than, or equal respectively and return 1 or 0 depending on the result.
-- The (%% <SYMBOL>) will take a single character input and store its value inside the symbol as its ascii representation. If it's an array, it is stored in the current pointed index.
 - The (]] <PAIR SYMBOL>) return the left symbol pointed by left of pair.
 - The ([[ <PAIR SYMBOL>) return the right symbol pointed by right of pair.
+- ([[]] <SYMBOL>*) takes a variable amount of SYMBOLs and returns a list out of it.
+- (&& <SYMBOL> <SYMBOL>) and (|| <SYMBOL> <SYMBOL>) logically ANDs or ORs the two symbols respectively, they are primitive functions.
+- @+, @-, //, and ** all follow a pattern (OP <SYMBOL>*) and are primitive functions that take a variable amount of symbols and adds, subtracts, divides, and multiplies their values respectively. If the values returned by these symbols are not numbers, then an error is thrown. %% returns the remainder. Division by default returns the quotient in whole numbers.
+- (~~ <SYMBOL>) logically NOTs the value of the symbol.
+- (@] <SYMBOL> <SYMBOL VALUE>) and (@[ <SYMBOL> <SYMBOL VALUE>) assigns the value of VALUE SYMBOL to SYMBOL, with @] assigning to right of pair and @[ assigning to right.
+- (!! <SYMBOL> (VALUE)) defines a new symbol, with an optional VALUE. VALUE is evaluated and assigned to the new symbol. If VALUE is ommited, the SYMBOL is assigned the number value 0. Calling !! on an existing SYMBOL overwrites its current value to either 0 or VALUE.
+- (@@ <SYMBOL>) writes the symbol evaluated as an ascii character. Takes lists to write strings.
+- (## <SYMBOL>) asks user for input and returns it as a list.
+- (^^ (<SYMBOL>*) (<COMMANDS>*)) takes a list of SYMBOLS defined as arguments in a new environment when called, with the called parameters as values, and a list of COMMANDS that is evaluated one after another when called.
 
 ### Tasks
 - [x] Read input as list.
@@ -104,4 +103,26 @@ argument = SYMBOL / command
 - [-] Implement array pointer movement left and right
     - [x] Remove arrays
 - [x] Refactor and split out all code
-- [ ] Refactor eval function to recursive
+- [x] Refactor eval function
+- [ ] Convert !! define to accomodate any data type, if 3rd arg is empty defaults to num
+- [ ] Implement pairs
+    - [ ] Implement [] making pairs
+    - [ ] Implement ]] getting pair right
+    - [ ] Implement [[ getting pair left
+    - [ ] Implement @[ set pair left
+    - [ ] Implement @] set pair right
+    - [ ] Implement [[]] list
+- [ ] Implement primitive functions
+    - [ ] Implement @+ addition
+    - [ ] Implement @- subtraction
+    - [ ] Implement // division
+    - [ ] Implement ** multiplication
+- [ ] Implement I/O
+    - [ ] Implement %% printing
+        - [ ] Implement printing lists
+    - [ ] Implement ## taking input and returning the input as list
+- [ ] Implement logical operators
+    - [ ] Implement && logical AND
+    - [ ] Implement || logical OR
+    - [ ] Implement ~~ logical NOT
+- [ ] Implement ^^ compound functions
