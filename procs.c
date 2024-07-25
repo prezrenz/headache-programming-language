@@ -126,6 +126,8 @@ object* print_ascii_proc(object* args) {
             putchar(current->data.number.value);
         } else if(current->type == PAIR) {
             print_ascii_proc(current);
+        } else if(current->type == EMPTY_LIST) {
+            break; // HACK: errors when printing input because tries to print empty list
         } else {
             fprintf(stderr, "Print error: invalid type %d\n", current->type);
             exit(1);
@@ -135,4 +137,38 @@ object* print_ascii_proc(object* args) {
     }
 
     return args;
+}
+
+#define READ_MAX 1024
+
+object* char_to_list(char* input, int x, int y) {
+    object* left;
+    object* right;
+
+    if(x >= y) {
+        return the_empty_list;
+    }
+
+    left = make_number(input[x]);
+    x++;
+
+    right = char_to_list(input, x, y);
+    
+    return make_pair(left, right);
+}
+
+object* read_line_proc(object* args) {
+    char c;
+    char buffer[READ_MAX];
+
+    c = getchar();
+    int i = 0;
+    while((c != EOF) && (c != '\n') && (i < READ_MAX+1)) {
+        buffer[i] = c;
+        i++;
+        c = getchar();
+    }
+    buffer[i+1] = '\0';
+
+    return char_to_list(buffer, 0, i);
 }

@@ -121,7 +121,9 @@ argument = SYMBOL / command
 - [x] Implement I/O
     - [x] Implement @@ printing
         - [x] Implement printing lists
-    - [ ] Implement ## taking input and returning the input as list
+    - [x] Implement ## taking line input and returning the input as list
+- [x] Don't print after eval when running a file.
+- [ ] Implement ^^ compound functions
 - [ ] Implement logical operators
     - [ ] Implement && logical AND
     - [ ] Implement || logical OR
@@ -130,5 +132,3 @@ argument = SYMBOL / command
     - [ ] Implement >?
     - [ ] Implement <?
     - [ ] Implement =?
-- [ ] Implement ^^ compound functions
-- [x] Don't print after eval when running a file.

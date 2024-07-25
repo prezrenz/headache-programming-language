@@ -122,6 +122,7 @@ object* set_right_proc(object* args);
 object* make_list_proc(object* args);
 
 object* print_ascii_proc(object* args);
+object* read_line_proc(object* args);
 
 /* EVALUATING */
 

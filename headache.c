@@ -75,6 +75,7 @@ int main(int argc, char** argv)
         add_primitive("@]", set_right_proc);
 
         add_primitive("@@", print_ascii_proc);
+        add_primitive("##", read_line_proc);
 
     /* START */
 
