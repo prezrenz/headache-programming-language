@@ -107,7 +107,12 @@ object* setup_environment();
 /* PRIMITIVE PROCEDURES*/
 
 object* make_primitive_proc(object* (*proc)(object* args));
+
 object* add_proc(object* args);
+object* sub_proc(object* args);
+object* div_proc(object* args);
+object* mod_proc(object* args);
+object* mult_proc(object* args);
 
 /* EVALUATING */
 

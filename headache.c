@@ -57,9 +57,16 @@ int main(int argc, char** argv)
     the_empty_environment = the_empty_list;
     the_global_environment = setup_environment();
 
-    define_var(make_symbol("@+"),
-                make_primitive_proc(add_proc),
+#define add_primitive(ache_name, c_name)        \
+        define_var(make_symbol(ache_name),      \
+                make_primitive_proc(c_name),    \
                 the_global_environment);
+
+        add_primitive("@+", add_proc);
+        add_primitive("@-", sub_proc);
+        add_primitive("//", div_proc);
+        add_primitive("%%", mod_proc);
+        add_primitive("**", mult_proc);
 
     /* START */
 
