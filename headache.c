@@ -45,7 +45,6 @@ int main(int argc, char** argv)
     // Setup symbol table
     symbol_table = the_empty_list;
     define_num_symbol = make_symbol("!!");
-    define_array_symbol = make_symbol("[]"); 
     define_func_symbol = make_symbol("^^");
 
     if_symbol = make_symbol("??");
@@ -67,6 +66,15 @@ int main(int argc, char** argv)
         add_primitive("//", div_proc);
         add_primitive("%%", mod_proc);
         add_primitive("**", mult_proc);
+
+        add_primitive("[]", make_pair_proc);
+        add_primitive("[[]]", make_list_proc);
+        add_primitive("[[", get_left_proc);
+        add_primitive("]]", get_right_proc);
+        add_primitive("@[", set_left_proc);
+        add_primitive("@]", set_right_proc);
+
+        add_primitive("@@", print_ascii_proc);
 
     /* START */
 
@@ -99,8 +107,9 @@ int main(int argc, char** argv)
 
         // Start of program
         while (!feof(program)) {
-            print(eval(read(program), the_global_environment));
-            printf("\n");
+            // print(eval(read(program), the_global_environment));
+            eval(read(program), the_global_environment);
+            // printf("\n");
         }
         printf("\n\nSuccessfully executed file");
     }

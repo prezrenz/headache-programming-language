@@ -111,16 +111,16 @@ argument = SYMBOL / command
     - [x] Implement // division
     - [x] Implement ** multiplication
     - [x] Implement %% modulo
-- [ ] Implement pairs
-    - [ ] Implement [] making pairs
-    - [ ] Implement ]] getting pair right
-    - [ ] Implement [[ getting pair left
-    - [ ] Implement @[ set pair left
-    - [ ] Implement @] set pair right
-    - [ ] Implement [[]] list
-- [ ] Implement I/O
-    - [ ] Implement @@ printing
-        - [ ] Implement printing lists
+- [x] Implement pairs
+    - [x] Implement [] making pairs
+    - [x] Implement ]] getting pair right
+    - [x] Implement [[ getting pair left
+    - [x] Implement @[ set pair left
+    - [x] Implement @] set pair right
+    - [x] Implement [[]] list
+- [x] Implement I/O
+    - [x] Implement @@ printing
+        - [x] Implement printing lists
     - [ ] Implement ## taking input and returning the input as list
 - [ ] Implement logical operators
     - [ ] Implement && logical AND
@@ -131,3 +131,4 @@ argument = SYMBOL / command
     - [ ] Implement <?
     - [ ] Implement =?
 - [ ] Implement ^^ compound functions
+- [x] Don't print after eval when running a file.

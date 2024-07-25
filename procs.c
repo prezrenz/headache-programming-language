@@ -89,3 +89,50 @@ object* mult_proc(object* args) {
 
     return make_number(result);
 }
+
+object* make_pair_proc(object* args) {
+    return make_pair(gpl(args), gpl(gpr(args)));
+}
+
+object* get_left_proc(object* args) {
+    return gpl(gpl(args));
+}
+
+object* get_right_proc(object* args) {
+    return gpr(gpl(args));
+}
+
+object* set_left_proc(object* args) {
+    spl(gpl(args), gpl(gpr(args)));
+    return gpl(gpr(args));
+}
+
+object* set_right_proc(object* args) {
+    spr(gpl(args), gpl(gpr(args)));
+    return gpl(gpr(args));
+}
+
+object* make_list_proc(object* args) {
+    return args;
+}
+
+object* print_ascii_proc(object* args) {
+    object* current;
+
+    while (!is_empty_list(args)) {
+        current = gpl(args);
+
+        if(current->type == NUMBER) {
+            putchar(current->data.number.value);
+        } else if(current->type == PAIR) {
+            print_ascii_proc(current);
+        } else {
+            fprintf(stderr, "Print error: invalid type %d\n", current->type);
+            exit(1);
+        }
+
+        args = gpr(args);
+    }
+
+    return args;
+}

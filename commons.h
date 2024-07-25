@@ -114,6 +114,15 @@ object* div_proc(object* args);
 object* mod_proc(object* args);
 object* mult_proc(object* args);
 
+object* make_pair_proc(object* args);
+object* get_left_proc(object* args);
+object* get_right_proc(object* args);
+object* set_left_proc(object* args);
+object* set_right_proc(object* args);
+object* make_list_proc(object* args);
+
+object* print_ascii_proc(object* args);
+
 /* EVALUATING */
 
 int is_symbol(object* obj);
