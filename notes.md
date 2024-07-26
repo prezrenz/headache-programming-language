@@ -4,22 +4,6 @@ A purely symbolic, no keywords, lisp like language.
 
 All commands start and end in parens. It follows the pattern (operator (operand)+). Operator is a statement, operand is an expression.
 
-(Symbol symbol) Assigns the value of symbol to symbol, or if it's a function, will assign the lambda of the function. If there's no return value, it throws error.
-
-(// Symbol symbol2) Divides symbol by symbol2 and returns the value. Throws error if one is function.
-
-(** Symbol symbol2) Same as above but for multiplication.
-
-(@+ Symbol symbol2) Adds both and returns the value.
-
-(@- Symbol symbol2) Same as above but subtract.
-
-(<< *(Symbol)) Returns a function. Using this outside a function will exit the program prematurely. Returns an optional symbol.
-
-(%% Symbol) Asks for a single character input and stores it as a hex value inside symbol.
-
-(@@ Symbol) Writes the binary value of Symbol into output as an ascii character.
-
 ## Grammar
 
 operation = "(" operator (operand)*)
@@ -59,7 +43,7 @@ argument = SYMBOL / command
 - (!! <SYMBOL> (VALUE)) defines a new symbol, with an optional VALUE. VALUE is evaluated and assigned to the new symbol. If VALUE is ommited, the SYMBOL is assigned the number value 0. Calling !! on an existing SYMBOL overwrites its current value to either 0 or VALUE.
 - (@@ <SYMBOL>) writes the symbol evaluated as an ascii character. Takes lists to write strings.
 - (## <SYMBOL>) asks user for input and returns it as a list.
-- (^^ (<SYMBOL>*) (<COMMANDS>*)) takes a list of SYMBOLS defined as arguments in a new environment when called, with the called parameters as values, and a list of COMMANDS that is evaluated one after another when called.
+- (^^ (<SYMBOL>*) <COMMANDS>*) takes a list of SYMBOLS defined as arguments in a new environment when called, with the called parameters as values, and a list of COMMANDS that is evaluated one after another when called.
 
 ### Tasks
 - [x] Read input as list.
@@ -71,11 +55,6 @@ argument = SYMBOL / command
     - Read pair: on recieving left, go to right and read pair again
 - [x] Print the returned list as a continuous list.
     - Print groupings properly
-- [ ] Fix reading bugs
-    - [ ] entering ) enters an endless loop
-    - [ ] entering ( followed by anything else constantly asks for input
-    - [ ] entering (sym)bol will leave bol in buffer (optional)
-    - [ ] exiting with <C-c> gives error variable undefined error
 - [x] Implement environment
     - [x] Read Section 3.2 of SICP
     - [x] Read Section 4.1.3 of SICP
@@ -92,8 +71,6 @@ argument = SYMBOL / command
     - [x] Read + or - and error if any other symbol in string, stop on delimiter and store len
     - [x] In eval pair, check if stacking + or - enum type, if so call set var and add len to var
     - [x] Return lookup var val
-    - [ ] Validate if objects operated on are numbers
-    - What happens if you define + or - as symbols?
 - [x] Implement ?? if command
     - [x] Implement checking if symbol is 0 or 1
 - [x] Implement conditionals
@@ -132,3 +109,19 @@ argument = SYMBOL / command
     - [ ] Implement >?
     - [ ] Implement <?
     - [ ] Implement =?
+- [ ] Make headache logo (head game-icon with red)
+- [ ] Make README Markdown
+    - [ ] Write Features
+    - [ ] Write samples and outputs
+    - [ ] Write References
+- [ ] Fix bugs
+    - [ ] reading: entering ) enters an endless loop
+    - [ ] reading: entering ( followed by anything else constantly asks for input
+    - [ ] reading: entering (sym)bol will leave bol in buffer (optional)
+    - [ ] reading: exiting with <C-c> gives error variable undefined error
+    - [ ] input/output proc: print is somehow reading an empty list returned from input
+    - [ ] stacking: Validate if objects operated on are numbers
+    - [ ] stacking: What happens if you define + or - as symbols?
+#### Optional Tasks
+- [ ] Implement Program Loading
+- [ ] Implement $$ make string as list special form
