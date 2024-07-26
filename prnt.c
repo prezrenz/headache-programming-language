@@ -32,6 +32,10 @@ void print(object* obj) {
         case NUMBER:
             printf("%d", obj->data.number.value);
             break;
+        case PRIMITIVE_PROC:
+        case COMPOUND_PROC:
+            printf("!TYPE:PROCEDURE!");
+            break;
         default:
             fprintf(stderr, "Error: unimplemented or unknown object type %d\n", obj->type);
             exit(1);

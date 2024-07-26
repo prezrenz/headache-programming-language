@@ -50,7 +50,7 @@ object* lookup_var_val(object* var, object* env) {
 
         env = get_enclosing_environment(env);
     }
-    fprintf(stderr, "Error: variable not defined\n");
+    fprintf(stderr, "Error: variable %s not defined\n", var->data.symbol.value);
     exit(1);
 }
 
@@ -76,7 +76,7 @@ void set_var_val(object* var, object* val, object* env) {
 
         env = get_enclosing_environment(env);
     }
-    fprintf(stderr, "Error: variable not defined\n");
+    fprintf(stderr, "Error: variable %s not defined\n", var->data.symbol.value);
     exit(1);
 }
 

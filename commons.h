@@ -11,13 +11,13 @@
 
 typedef enum{
     NUMBER,
-    COMP_PROC,
     SYMBOL,
     EMPTY_LIST,
     PAIR,
     STACKPLUS,
     STACKMIN,
-    PRIMITIVE_PROC
+    PRIMITIVE_PROC,
+    COMPOUND_PROC
 } object_type;
 
 typedef struct object {
@@ -44,6 +44,12 @@ typedef struct object {
         struct {
             struct object* (*proc)(struct object* args);
         } primitive_proc;
+
+        struct {
+            struct object* parameters;
+            struct object* body;
+            struct object* env;
+        } compound_proc;
     
     } data; 
 
@@ -55,13 +61,12 @@ extern object* the_empty_list; // Essentially just a null to end lists
 extern object* the_empty_environment;
 extern object* the_global_environment;
 extern object* symbol_table;
-extern object* define_num_symbol;
-extern object* define_array_symbol;
-extern object* define_func_symbol;
+extern object* define_symbol;
 extern object* if_symbol;
 extern object* less_symbol;
 extern object* great_symbol;
 extern object* equal_symbol;
+extern object* lambda_symbol;
 
 /* HELPERS */
 
@@ -126,14 +131,17 @@ object* read_line_proc(object* args);
 
 /* EVALUATING */
 
+object* make_compound_proc(object* parameters, object* body, object* env);
+object* make_lambda(object* parameters, object* body);
+
 int is_symbol(object* obj);
 
-int is_define_number(object* obj);
+int is_define(object* obj);
 
 object* get_def_var(object* obj);
 object* get_def_val(object* obj, object* env);
 
-object* eval_define_number(object* obj, object* env);
+object* eval_define(object* obj, object* env);
 
 int is_stack_plus(object* obj);
 int is_stack_min(object* obj);
@@ -159,6 +167,14 @@ int is_cond_equal(object* obj);
 
 object* cond_first_sym(object* obj);
 object* cond_second_sym(object* obj);
+
+int is_lambda(object* obj);
+object* get_lambda_params(object* obj);
+object* get_lambda_body(object* obj);
+
+int is_last_exp(object* obj);
+object* first_exp(object* obj);
+object* rest_exp(object* obj);
 
 #define COMPARE(sym1, sym2, op) (sym1->data.number.value op sym2->data.number.value)
 

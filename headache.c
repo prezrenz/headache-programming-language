@@ -5,13 +5,12 @@ object* the_empty_list; // Essentially just a null to end lists
 object* the_empty_environment;
 object* the_global_environment;
 object* symbol_table;
-object* define_num_symbol;
-object* define_array_symbol;
-object* define_func_symbol;
+object* define_symbol;
 object* if_symbol;
 object* less_symbol;
 object* great_symbol;
 object* equal_symbol;
+object* lambda_symbol;
 
 object* gpl(object* obj) { // Get Pair Left
     return obj->data.pair.left;
@@ -44,13 +43,14 @@ int main(int argc, char** argv)
 
     // Setup symbol table
     symbol_table = the_empty_list;
-    define_num_symbol = make_symbol("!!");
-    define_func_symbol = make_symbol("^^");
+    define_symbol = make_symbol("!!");
 
     if_symbol = make_symbol("??");
     less_symbol = make_symbol("<?");
     great_symbol = make_symbol(">?");
     equal_symbol = make_symbol("=?");
+
+    lambda_symbol = make_symbol("^^");
 
     // Setup environment
     the_empty_environment = the_empty_list;
@@ -108,9 +108,9 @@ int main(int argc, char** argv)
 
         // Start of program
         while (!feof(program)) {
-            // print(eval(read(program), the_global_environment));
-            eval(read(program), the_global_environment);
-            // printf("\n");
+            print(eval(read(program), the_global_environment));
+            // eval(read(program), the_global_environment);
+            printf("\n");
         }
         printf("\n\nSuccessfully executed file");
     }

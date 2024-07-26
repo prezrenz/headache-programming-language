@@ -1,34 +1,54 @@
 #include "commons.h"
+#include <stdio.h>
+
+object* make_compound_proc(object* parameters, object* body, object* env) {
+    object* obj;
+
+    obj = malloc(sizeof(object));
+    obj->type = COMPOUND_PROC;
+    obj->data.compound_proc.parameters = parameters;
+    obj->data.compound_proc.body = body;
+    obj->data.compound_proc.env = env;
+
+    return obj;
+}
+
+object* make_lambda(object* parameters, object* body) {
+    return make_pair(lambda_symbol, make_pair(parameters, body));
+}
 
 int is_symbol(object* obj) {
     return (obj->type == SYMBOL);
 }
 
-int is_define_number(object* obj) {
-    return (gpl(obj)->type == SYMBOL) && (gpl(obj) == define_num_symbol);
+int is_define(object* obj) {
+    return (gpl(obj)->type == SYMBOL) && (gpl(obj) == define_symbol);
 }
 
 object* get_def_var(object* obj) {
-    return gpl(gpr(obj));
+    if(is_symbol(gpl(gpr(obj)))) {
+        return gpl(gpr(obj));
+    } else {
+        return gpl(gpl(gpr(obj)));
+    }
 }
 
 object* get_def_val(object* obj, object* env) {
     if(is_empty_list(gpr(gpr(obj)))) {
-        return the_empty_list;
+        return make_number(0);
     }
 
-    return eval(gpl(gpr(gpr(obj))), env);
+    if(is_symbol(gpl(gpr(obj)))) {
+        return eval(gpl(gpr(gpr(obj))), env);
+    } else {
+        return eval(make_lambda(gpr(gpl(gpr(obj))), gpr(gpr(obj))), env);
+    }
+
 }
 
-object* eval_define_number(object* obj, object* env) {
-    object* val = get_def_val(obj, env);
-
-    if(is_empty_list(val)) {
-        val = make_number(0);
-    }
-
-    define_var(get_def_var(obj), val, env);
-    return lookup_var_val(gpl(gpr(obj)), env);
+object* eval_define(object* obj, object* env) {
+    define_var(get_def_var(obj), get_def_val(obj, env), env);
+    return get_def_var(obj);
 }
 
 int is_stack_plus(object* obj) {
@@ -117,6 +137,30 @@ object* cond_second_sym(object* obj) {
     return gpl(gpr(gpr(obj)));
 }
 
+int is_lambda(object* obj) {
+    return (gpl(obj)->type == SYMBOL) && (gpl(obj) == lambda_symbol);
+}
+
+object* get_lambda_params(object* obj) {
+    return gpl(gpr(obj));
+}
+
+object* get_lambda_body(object* obj) {
+    return gpr(gpr(obj));
+}
+
+int is_last_exp(object* obj) {
+    return is_empty_list(gpr(obj));
+}
+
+object* first_exp(object* obj) {
+    return gpl(obj);
+}
+
+object* rest_exp(object* obj) {
+    return gpr(obj);
+}
+
 #define COMPARE(sym1, sym2, op) (sym1->data.number.value op sym2->data.number.value)
 
 int is_application(object* obj) {
@@ -142,8 +186,8 @@ tailcall:
         return obj;
     } else if(is_symbol(obj)) {
         return lookup_var_val(obj, env);
-    } else if(is_define_number(obj)) {
-        return eval_define_number(obj, env);
+    } else if(is_define(obj)) {
+        return eval_define(obj, env);
     } else if(is_stack_plus(obj)) {
         return eval_stack_plus(obj, env);
     } else if(is_stack_min(obj)) {
@@ -165,10 +209,35 @@ tailcall:
         object* sym1 = lookup_var_val(cond_first_sym(obj), env);
         object* sym2 = lookup_var_val(cond_second_sym(obj), env);
         return make_number(COMPARE(sym1, sym2, ==));
+    } else if(is_lambda(obj)) {
+        return make_compound_proc(get_lambda_params(obj),
+                                    get_lambda_body(obj),
+                                    env);
     } else if(is_application(obj)) { // NOTE: needs to be checked AFTER others
         proc = eval(gpl(obj), env); // Gets the operator
         args = list_of_vals(gpr(obj), env); // Gets operands
-        return (proc->data.primitive_proc.proc)(args);
+        
+        if(proc->type == PRIMITIVE_PROC) { 
+            return (proc->data.primitive_proc.proc)(args);
+         } else if(proc->type == COMPOUND_PROC) {
+            env = extend_environment(proc->data.compound_proc.parameters,
+                                        args,
+                                        proc->data.compound_proc.env);
+            obj = proc->data.compound_proc.body;
+            
+            // Start evaluating body, except last one
+            while(!is_last_exp(obj)) {
+                eval(first_exp(obj), env);
+                obj = rest_exp(obj);
+            }
+            obj = first_exp(obj); // the last command in body
+            goto tailcall;        // starts the tailcall
+                                  // with the last command in body as exp
+         } else {
+             fprintf(stderr, "Error: unknown procedure type %d\n", proc->type);
+             exit(1);
+         }
+
     } else {
         fprintf(stderr, "Eval error: unimplemented or illegal type %d\n", obj->type);
         exit(1);
