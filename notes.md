@@ -100,7 +100,7 @@ argument = SYMBOL / command
         - [x] Implement printing lists
     - [x] Implement ## taking line input and returning the input as list
 - [x] Don't print after eval when running a file.
-- [ ] Implement ^^ compound functions
+- [x] Implement ^^ compound functions
 - [ ] Implement logical operators
     - [ ] Implement && logical AND
     - [ ] Implement || logical OR
@@ -122,6 +122,11 @@ argument = SYMBOL / command
     - [ ] input/output proc: print is somehow reading an empty list returned from input
     - [ ] stacking: Validate if objects operated on are numbers
     - [ ] stacking: What happens if you define + or - as symbols?
+    - [ ] input/output proc: its printing the empty list, should not
 #### Optional Tasks
 - [ ] Implement Program Loading
-- [ ] Implement $$ make string as list special form
+- [ ] Implement $$ make string as list special form- [ ] Refactor and clean
+	- [ ] Give names to pair commands e.g. proc = eval(gpl(obj)) what does gpl mean in this context?
+	- [ ] make type checks for each data type and use that everywhere
+	- [ ] reorder everything according to their use
+	- [ ] Replace all symbol checking with is_tagged_list
