@@ -63,6 +63,8 @@ extern object* the_global_environment;
 extern object* symbol_table;
 extern object* define_symbol;
 extern object* if_symbol;
+extern object* and_symbol;
+extern object* or_symbol;
 extern object* less_symbol;
 extern object* great_symbol;
 extern object* equal_symbol;
@@ -126,6 +128,8 @@ object* set_left_proc(object* args);
 object* set_right_proc(object* args);
 object* make_list_proc(object* args);
 
+object* not_proc(object* args);
+
 object* print_ascii_proc(object* args);
 object* read_line_proc(object* args);
 
@@ -160,6 +164,11 @@ int is_true(object* obj);
 object* get_predicate(object* obj);
 object* if_consequent(object* obj);
 object* if_alternative(object* obj);
+
+int is_and(object* obj);
+int is_or(object* obj);
+object* and_tests(object* obj);
+object* or_tests(object* obj);
 
 int is_cond_great(object* obj);
 int is_cond_less(object* obj);

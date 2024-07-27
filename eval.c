@@ -117,6 +117,22 @@ object* if_alternative(object* obj) {
     }
 }
 
+int is_and(object* obj) {
+    return (gpl(obj)->type == SYMBOL) && (gpl(obj) == and_symbol);
+}
+
+int is_or(object* obj) {
+    return (gpl(obj)->type == SYMBOL) && (gpl(obj) == or_symbol);
+}
+
+object* and_tests(object* obj) {
+    return gpr(obj);
+}
+
+object* or_tests(object* obj) {
+    return gpr(obj);
+}
+
 int is_cond_great(object* obj) {
     return (gpl(obj)->type == SYMBOL) && (gpl(obj) == great_symbol);
 }
@@ -180,6 +196,7 @@ object* list_of_vals(object* obj, object* env) {
 object* eval(object* obj, object* env) {
     object* proc;
     object* args;
+    object* result;
 
 tailcall:
     if(is_empty_list(obj)) {
@@ -196,6 +213,34 @@ tailcall:
         obj = is_true(eval(get_predicate(obj), env)) ?
                 if_consequent(obj) :
                 if_alternative(obj);
+        goto tailcall;
+    } else if(is_and(obj)) {
+        obj = and_tests(obj);
+        if(is_empty_list(obj)) {
+            return make_number(1);
+        }
+        while (!is_last_exp(obj)) {
+            result = eval(first_exp(obj), env);
+            if(!is_true(result)) {
+                return result;
+            }
+            obj = rest_exp(obj);
+        }
+        obj = first_exp(obj);
+        goto tailcall;
+    } else if(is_or(obj)) {
+        obj = or_tests(obj);
+        if(is_empty_list(obj)) {
+            return make_number(0);
+        }
+        while (!is_last_exp(obj)) {
+            result = eval(first_exp(obj), env);
+            if(is_true(result)) {
+                return result;
+            }
+            obj = rest_exp(obj);
+        }
+        obj = first_exp(obj);
         goto tailcall;
     } else if(is_cond_great(obj)) {
         object* sym1 = lookup_var_val(cond_first_sym(obj), env);

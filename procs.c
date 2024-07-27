@@ -172,3 +172,15 @@ object* read_line_proc(object* args) {
 
     return char_to_list(buffer, 0, i);
 }
+
+object* not_proc(object* args) {
+    if(gpl(args)->type == EMPTY_LIST) {
+        return make_number(1);
+    }
+
+    if(gpl(args)->type != NUMBER) {
+        fprintf(stderr, "Error: not only takes numbers as arguments, but got type %d\n", gpl(args)->type);
+    }
+
+    return make_number(!(gpl(args)->data.number.value));
+}

@@ -101,14 +101,10 @@ argument = SYMBOL / command
     - [x] Implement ## taking line input and returning the input as list
 - [x] Don't print after eval when running a file.
 - [x] Implement ^^ compound functions
-- [ ] Implement logical operators
-    - [ ] Implement && logical AND
-    - [ ] Implement || logical OR
-    - [ ] Implement ~~ logical NOT
-- [ ] Reimplement conditionals as primitives
-    - [ ] Implement >?
-    - [ ] Implement <?
-    - [ ] Implement =?
+- [x] Implement logical operators
+    - [x] Implement && logical AND
+    - [x] Implement || logical OR
+    - [x] Implement ~~ logical NOT (primitive proc)
 - [ ] Make headache logo (head game-icon with red)
 - [ ] Make README Markdown
     - [ ] Write Features
@@ -123,10 +119,16 @@ argument = SYMBOL / command
     - [ ] stacking: Validate if objects operated on are numbers
     - [ ] stacking: What happens if you define + or - as symbols?
     - [ ] input/output proc: its printing the empty list, should not
+    - [ ] test and/or/not
 #### Optional Tasks
 - [ ] Implement Program Loading
-- [ ] Implement $$ make string as list special form- [ ] Refactor and clean
-	- [ ] Give names to pair commands e.g. proc = eval(gpl(obj)) what does gpl mean in this context?
-	- [ ] make type checks for each data type and use that everywhere
-	- [ ] reorder everything according to their use
-	- [ ] Replace all symbol checking with is_tagged_list
+- [ ] Implement $$ make string as list special form
+- [ ] Refactor and clean
+    - [ ] Give names to pair commands e.g. proc = eval(gpl(obj)) what does gpl mean in this context?
+    - [ ] make type checks for each data type and use that everywhere
+    - [ ] reorder everything according to their use
+    - [ ] Replace all symbol checking with is_tagged_list
+- [ ] Reimplement conditionals as primitives
+    - [ ] Implement >?
+    - [ ] Implement <?
+    - [ ] Implement =?

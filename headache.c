@@ -7,6 +7,8 @@ object* the_global_environment;
 object* symbol_table;
 object* define_symbol;
 object* if_symbol;
+object* and_symbol;
+object* or_symbol;
 object* less_symbol;
 object* great_symbol;
 object* equal_symbol;
@@ -46,7 +48,9 @@ int main(int argc, char** argv)
     define_symbol = make_symbol("!!");
 
     if_symbol = make_symbol("??");
-    less_symbol = make_symbol("<?");
+    and_symbol = make_symbol("&&");
+    or_symbol = make_symbol("||");
+    less_symbol = make_symbol("<?"); 
     great_symbol = make_symbol(">?");
     equal_symbol = make_symbol("=?");
 
