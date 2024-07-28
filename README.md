@@ -14,23 +14,23 @@ A hard to use programming language inspired by Scheme.
 - Negatives exist. For now.
 
 ## Syntax
-- (<OPERATOR> <OPERANDS>*) is the form of most commands. Most commands take many operands. Operands are first evaluated, then the operation is applied.
-- (!! <SYMBOL>) defines a symbol with the value 0.
-- (!! <SYMBOL> <INITIAL>) defines a symbol with the value of INITIAL after it has been evaluated.
-- (!! (<PROC NAME> <PARAMETERS>*) <BODY>*) defines a symbol with a procedure.
-- (^^ (<PARAMETERS*>) <BODY>*) returns a procedure but does not define it in the environment.
-- (<+ OR ->* <SYMBOL>) stacking operators for + and -, which increment and decrement respectively. Stack many of it to increment or decrement a number by that amount. Does not mix with each other.
-- (?? <COND> <CONSEQUENT> <ALTERNATE>) checks if cond evaluates to 0, if so then alternate is evaluated and its value returned, otherwise if cond is 1 or greater than 0 then consequent is evaluated and its value returned.
-- (< >? / <? / =? > <FIRST> <SECOND>) evaluates the expressions FIRST and SECOND then checks if the returned values are greater than, less than, or equal to respectively. Returns 0 for false and 1 for true.
-- (! <EXP>) evaluates the expression and returns the logical NOT of it.
-- ( <&&/||> <EXP>*) returns the logical AND or logical OR of the expressions.
+- (\<OPERATOR\> \<OPERANDS\>\*) is the form of most commands. Most commands take many operands. Operands are first evaluated, then the operation is applied.
+- (!! \<SYMBOL\>) defines a symbol with the value 0.
+- (!! \<SYMBOL\> <INITIAL>) defines a symbol with the value of INITIAL after it has been evaluated.
+- (!! (\<PROC NAME\> \<PARAMETERS\>\*) \<BODY\>\*) defines a symbol with a procedure.
+- (^^ (\<PARAMETERS\*\>) \<BODY\>\*) returns a procedure but does not define it in the environment.
+- (\<+ OR -\>\* \<SYMBOL\>) stacking operators for + and -, which increment and decrement respectively. Stack many of it to increment or decrement a number by that amount. Does not mix with each other.
+- (?? \<COND\> \<CONSEQUENT\> \<ALTERNATE\>) checks if cond evaluates to 0, if so then alternate is evaluated and its value returned, otherwise if cond is 1 or greater than 0 then consequent is evaluated and its value returned.
+- (\< \>? / \<? / =? \> \<FIRST\> \<SECOND\>) evaluates the expressions FIRST and SECOND then checks if the returned values are greater than, less than, or equal to respectively. Returns 0 for false and 1 for true.
+- (! \<EXP\>) evaluates the expression and returns the logical NOT of it.
+- ( \<&&/||\> \<EXP\>\*) returns the logical AND or logical OR of the expressions.
 - (##) takes an input and returns it as a LIST. The returned list has the ascii values of the inputted characters.
-- (@@ <EXP>/<LIST>) prints the ascii equivalent of the returned number of EXP. Can also print lists, for a string of characters.
-- @+, @-, **, //, %% are arithmetic operators that add, subtract, multiply, divide, and modulus respectively its given operands.
-- ([] <LEFT> <RIGHT>) returns a pair with the evaluated value of LEFT and evaluated value of RIGHT. Use with define to store it in the environment.
-- (<]] / [[> <PAIR>) returns the right of a pair and the left of a pair respectively.
-- (<@] / @[> <PAIR> <VALUE>) sets the value of the right or left of the pair to the evaluated value of VALUE.
-- ([[]] <EXP>*) returns a list out of the evaluated values of EXP.
+- (@@ \<EXP\>/\<LIST\>) prints the ascii equivalent of the returned number of EXP. Can also print lists, for a string of characters.
+- @+, @-, \*\*, //, %% are arithmetic operators that add, subtract, multiply, divide, and modulus respectively its given operands.
+- ([] \<LEFT\> \<RIGHT\>) returns a pair with the evaluated value of LEFT and evaluated value of RIGHT. Use with define to store it in the environment.
+- (\<]] / [[\> \<PAIR\>) returns the right of a pair and the left of a pair respectively.
+- (\<@] / @[\> \<PAIR\> \<VALUE\>) sets the value of the right or left of the pair to the evaluated value of VALUE.
+- ([[]] \<EXP\>\*) returns a list out of the evaluated values of EXP.
 
 ## Samples
 - Defines the symbols 1 and 2 and increment their values from 0 to 1 and 2 respectively
