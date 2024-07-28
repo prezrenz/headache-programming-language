@@ -105,11 +105,11 @@ argument = SYMBOL / command
     - [x] Implement && logical AND
     - [x] Implement || logical OR
     - [x] Implement ~~ logical NOT (primitive proc)
-- [ ] Make headache logo (head game-icon with red)
-- [ ] Make README Markdown
-    - [ ] Write Features
-    - [ ] Write samples and outputs
-    - [ ] Write References
+- [x] Make headache logo (head game-icon with red)
+- [x] Make README Markdown
+    - [x] Write Features
+    - [x] Write samples and outputs
+    - [x] Write References
 - [ ] Fix bugs
     - [ ] reading: entering ) enters an endless loop
     - [ ] reading: entering ( followed by anything else constantly asks for input
