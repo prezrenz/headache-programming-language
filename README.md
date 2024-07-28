@@ -44,6 +44,6 @@ A hard to use programming language inspired by Scheme.
 ```
 
 ## References
-- (Scheme from Scratch by Peter Michaux)[http://peter.michaux.ca/articles/scheme-from-scratch-introduction]
-- (Structure and Interpretation of Computer Programs)[https://www.amazon.com/Structure-Interpretation-Computer-Programs-Engineering/dp/0262510871]
-- Logo is from (game-icons.net)[game-icons.net]
+- [Scheme from Scratch by Peter Michaux](http://peter.michaux.ca/articles/scheme-from-scratch-introduction)
+- [Structure and Interpretation of Computer Programs](https://www.amazon.com/Structure-Interpretation-Computer-Programs-Engineering/dp/0262510871)
+- Logo is from [game-icons.net](game-icons.net)
